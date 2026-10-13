@@ -2,7 +2,7 @@
 
 Ranking dos CEPs do Rio de Janeiro por prioridade de poda de árvores, com mapa de risco, feito a partir dos chamados abertos da Central 1746.
 
-**Ver o site:** `https://heitor-oss.github.io/onde-podar-agora/` (disponível depois de ativar o GitHub Pages)
+**Ver o site:** `https://heitor-oss.github.io/onde-podar-agora/`
 
 Análise exploratória do projeto de extensão *Ciência de Dados para Cidades Inteligentes* (UFRJ). Não é um dado oficial da Prefeitura, da COMLURB nem da Light.
 
