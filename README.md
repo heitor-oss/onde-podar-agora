@@ -1,10 +1,40 @@
 # Onde podar agora — Rio de Janeiro
 
-Ranking dos CEPs do Rio de Janeiro por prioridade de poda de árvores, com mapa de risco, feito a partir dos chamados abertos da Central 1746.
-
-**Ver o site:** `https://heitor-oss.github.io/onde-podar-agora/`
+Onde a poda de árvores é mais urgente no Rio, por que, e o que pode acontecer se não podar. Feito a partir dos chamados abertos da Central 1746 (set/2022 a set/2026).
 
 Análise exploratória do projeto de extensão *Ciência de Dados para Cidades Inteligentes* (UFRJ). Não é um dado oficial da Prefeitura, da COMLURB nem da Light.
+
+## O que tem neste repositório
+
+| | |
+|---|---|
+| **[Site: Onde podar agora](https://heitor-oss.github.io/onde-podar-agora/)** | Os lugares prioritários, o motivo de cada um, o risco de não podar, mapa de risco e a lista completa de 9.848 CEPs. Feito para gestores. |
+| **[Código da análise](codigo/)** | As 70 etapas em Python que vão dos CSVs do 1746 até o site: limpeza, modelos, validação. Comece pelo **[guia do código](codigo/README.md)**. |
+| **[Documento: aprendizado de máquina no projeto](docs/aprendizado_de_maquina.md)** | Explicação didática dos três modelos usados, de como foram testados e do quanto dá para confiar neles. |
+| **[Dados](dados/)** | O ranking completo por CEP e as quedas de árvore no verão por quadrado de 1 km, em CSV. |
+
+## O código
+
+Toda a análise pode ser refeita do zero. O código é uma sequência de etapas numeradas, cada uma com um cabeçalho em português dizendo o que faz, o que lê e o que grava:
+
+```mermaid
+flowchart LR
+    CSV["Chamados do 1746<br/>+ setores + clima"] --> A["A · preparar<br/>e limpar"]
+    A --> BG["B a G · picos, clima,<br/>emergências, prontidão"]
+    A --> HI["H e I · árvores na fiação:<br/>modelo 1 e frentes"]
+    HI --> J["J · ranking por CEP<br/>e validação"]
+    J --> SITE["site e planilhas"]
+```
+
+Para rodar (com os CSVs dos chamados em `codigo/dados_entrada/`):
+
+```
+cd codigo
+pip install -r requirements.txt
+python rodar_tudo.py
+```
+
+Em 12 a 25 minutos, o site e as planilhas aparecem em `codigo/saidas/`. O **[guia do código](codigo/README.md)** explica passo a passo como rodar, como os dados foram limpos e filtrados, onde está cada modelo e o que tem em cada arquivo. A lista de todas as etapas está em **[codigo/ETAPAS.md](codigo/ETAPAS.md)**.
 
 ## O que a página mostra
 
@@ -67,11 +97,8 @@ Testado e descartado (não melhorou o acerto): vizinhança de 150–300 m, queda
 | `index.html` | o site, autocontido (dados embutidos) |
 | `dados/ranking_ceps_poda.csv` | ranking completo com os pesos sugeridos: nota, posição na zona, pontos de cada sinal, contagens e coordenadas do CEP |
 | `dados/quedas_verao_quadrados_1km.csv` | quedas de árvore de dezembro a abril (2022–2026) por quadrado de ~1 km |
-| `codigo/` | todo o código da análise: limpeza dos chamados, modelos de aprendizado de máquina, validação e montagem desta página. Comece por [`codigo/README.md`](codigo/README.md) |
-
-## Código
-
-A pasta [`codigo/`](codigo/) tem as 70 etapas da análise, numeradas na ordem em que rodam (A01 a J18), cada uma com um cabeçalho que explica o que faz, o que lê e o que grava. Com os CSVs dos chamados em `codigo/dados_entrada/`, `python codigo/rodar_tudo.py` refaz tudo, inclusive este site, em cerca de 12 minutos. O [`codigo/README.md`](codigo/README.md) explica como rodar, os filtros e definições usados nos dados e os modelos.
+| `codigo/` | todo o código da análise; veja [o guia](codigo/README.md) |
+| `docs/aprendizado_de_maquina.md` | documento didático sobre os modelos |
 
 ## Limites
 

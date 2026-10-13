@@ -128,6 +128,7 @@ tr.det td{padding:4px 10px 14px 50px;border-bottom:1px solid var(--line);backgro
 .vt{min-width:560px}
 .vt td.n b{color:var(--accent)}
 .note{font-size:14px;color:var(--muted);border-left:3px solid var(--line);padding-left:10px}
+.note a,footer a{color:var(--accent)}
 footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;max-width:76ch}
 .bands td{white-space:nowrap}
 .mb{display:inline-block;width:90px;height:8px;background:var(--soft);border-radius:2px;margin-right:8px;vertical-align:middle;overflow:hidden}
@@ -190,7 +191,7 @@ details.apx>summary small{display:block;font-family:var(--f-body);font-weight:40
   <div class="eyebrow">Chamados 1746 de manejo arbóreo · dados até <span id="ate"></span></div>
   <h1>Onde podar primeiro no Rio, e por quê</h1>
   <p class="lead">Esta página mostra os lugares onde a falta de poda tem mais chance de virar problema nos próximos meses: árvore caindo ou árvore encostando na fiação elétrica. Para cada lugar, explica o motivo, o que costuma acontecer quando nada é feito e quem precisa agir.</p>
-  <p class="note">Análise exploratória do projeto de extensão <b>Ciência de Dados para Cidades Inteligentes</b> (UFRJ), feita com dados abertos do 1746. Não é um dado oficial da Prefeitura, da COMLURB nem da Light.</p>
+  <p class="note">Análise exploratória do projeto de extensão <b>Ciência de Dados para Cidades Inteligentes</b> (UFRJ), feita com dados abertos do 1746. Não é um dado oficial da Prefeitura, da COMLURB nem da Light. <b>Código, dados e documentação:</b> <a href="https://github.com/heitor-oss/onde-podar-agora" target="_blank" rel="noopener">github.com/heitor-oss/onde-podar-agora</a>.</p>
   <div class="facts" id="facts"></div>
 </header>
 
@@ -359,7 +360,7 @@ details.apx>summary small{display:block;font-family:var(--f-body);font-weight:40
 </section>
   </div>
 </details>
-<footer>Fonte: chamados de manejo arbóreo da Central 1746 (set/2022 a set/2026), publicados no Data.Rio, a base de dados abertos da Prefeitura do Rio. Pedidos agregados por CEP; nenhum dado pessoal é exibido. Atualizado com dados até <span id="ate2"></span>.</footer>
+<footer>Fonte: chamados de manejo arbóreo da Central 1746 (set/2022 a set/2026), publicados no Data.Rio, a base de dados abertos da Prefeitura do Rio. Pedidos agregados por CEP; nenhum dado pessoal é exibido. Atualizado com dados até <span id="ate2"></span>. O código que gera esta página e o documento sobre os modelos estão no <a href="https://github.com/heitor-oss/onde-podar-agora" target="_blank" rel="noopener">repositório do projeto</a>.</footer>
 </div>
 
 <script type="application/json" id="data">__DATA__</script>

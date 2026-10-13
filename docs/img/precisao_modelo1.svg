@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" font-family="Helvetica, Arial, sans-serif" font-size="12">
+<rect width="760" height="420" fill="#ffffff"/>
+<text x="40" y="30" font-size="16" fill="#111827">Modelo e regra simples empatam: ~50% de acerto numa lista de 300</text>
+<text x="40" y="52" fill="#4b5563">Teste jan/2025: % dos trechos da lista que tiveram nova poda Pendente em 12 meses</text>
+<line x1="40" x2="64" y1="80" y2="80" stroke="#2563eb" stroke-width="3"/><text x="70" y="84" fill="#111827">Modelo (gradient boosting)</text>
+<line x1="280" x2="304" y1="80" y2="80" stroke="#6b7280" stroke-width="2"/><text x="310" y="84" fill="#111827">Regra: mais pendentes</text>
+<line x1="520" x2="544" y1="80" y2="80" stroke="#c4c9d0" stroke-width="2"/><text x="550" y="84" fill="#111827">Regra: mais podas</text>
+<line x1="90" x2="720" y1="360.0" y2="360.0" stroke="#e5e7eb"/><text x="80" y="364.0" text-anchor="end" fill="#4b5563">0%</text>
+<line x1="90" x2="720" y1="300.0" y2="300.0" stroke="#e5e7eb"/><text x="80" y="304.0" text-anchor="end" fill="#4b5563">20%</text>
+<line x1="90" x2="720" y1="240.0" y2="240.0" stroke="#e5e7eb"/><text x="80" y="244.0" text-anchor="end" fill="#4b5563">40%</text>
+<line x1="90" x2="720" y1="180.00000000000003" y2="180.00000000000003" stroke="#e5e7eb"/><text x="80" y="184.00000000000003" text-anchor="end" fill="#4b5563">60%</text>
+<line x1="90" x2="720" y1="120.0" y2="120.0" stroke="#e5e7eb"/><text x="80" y="124.0" text-anchor="end" fill="#4b5563">80%</text>
+<line x1="90" x2="720" y1="339.6" y2="339.6" stroke="#9ca3af" stroke-dasharray="5 4"/><text x="96" y="333.6" fill="#4b5563">Sorteio (taxa base): 6,8%</text>
+<path d="M110 240.0 L228 237.0 L346 231.0 L464 245.1 L582 258.6 L700 276.6" fill="none" stroke="#c4c9d0" stroke-width="2"/><circle cx="110" cy="240.0" r="3.5" fill="#c4c9d0"/><circle cx="228" cy="237.0" r="3.5" fill="#c4c9d0"/><circle cx="346" cy="231.0" r="3.5" fill="#c4c9d0"/><circle cx="464" cy="245.1" r="3.5" fill="#c4c9d0"/><circle cx="582" cy="258.6" r="3.5" fill="#c4c9d0"/><circle cx="700" cy="276.6" r="3.5" fill="#c4c9d0"/>
+<path d="M110 138.0 L228 174.0 L346 196.5 L464 209.1 L582 227.4 L700 246.0" fill="none" stroke="#6b7280" stroke-width="2"/><circle cx="110" cy="138.0" r="3.5" fill="#6b7280"/><circle cx="228" cy="174.0" r="3.5" fill="#6b7280"/><circle cx="346" cy="196.5" r="3.5" fill="#6b7280"/><circle cx="464" cy="209.1" r="3.5" fill="#6b7280"/><circle cx="582" cy="227.4" r="3.5" fill="#6b7280"/><circle cx="700" cy="246.0" r="3.5" fill="#6b7280"/>
+<path d="M110 162.0 L228 168.0 L346 190.5 L464 207.0 L582 220.8 L700 245.7" fill="none" stroke="#2563eb" stroke-width="3"/><circle cx="110" cy="162.0" r="3.5" fill="#2563eb"/><circle cx="228" cy="168.0" r="3.5" fill="#2563eb"/><circle cx="346" cy="190.5" r="3.5" fill="#2563eb"/><circle cx="464" cy="207.0" r="3.5" fill="#2563eb"/><circle cx="582" cy="220.8" r="3.5" fill="#2563eb"/><circle cx="700" cy="245.7" r="3.5" fill="#2563eb"/>
+<text x="472" y="197.0" fill="#2563eb" font-weight="bold">51%</text><text x="472" y="227.1" fill="#4b5563" font-weight="bold">50%</text>
+<text x="110" y="382" text-anchor="middle" fill="#4b5563">50</text>
+<text x="228" y="382" text-anchor="middle" fill="#4b5563">100</text>
+<text x="346" y="382" text-anchor="middle" fill="#4b5563">200</text>
+<text x="464" y="382" text-anchor="middle" fill="#4b5563">300</text>
+<text x="582" y="382" text-anchor="middle" fill="#4b5563">500</text>
+<text x="700" y="382" text-anchor="middle" fill="#4b5563">1000</text>
+<text x="405" y="408" text-anchor="middle" fill="#4b5563">tamanho da lista (nº de trechos vistoriados, do mais ao menos prioritário)</text></svg>
