@@ -1,0 +1,556 @@
+<title>Onde podar agora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: uma coluna de leitura; resposta por zona no topo, pesos ajustáveis, depois mapa + lista completa */
+:root{
+  --bg:#f5f7f5; --surface:#ffffff; --ink:#18221d; --muted:#5a6a62; --line:#dbe3de; --soft:#eaf0ec;
+  --accent:#1f6b4a;
+  --c-risco:#c2412d; --c-com:#2e8b57; --c-light:#d49a12; --c-prev:#6c5bb3; --c-esp:#8a9890;
+  --a-com:#2e8b57; --a-mix:#c98a0c; --a-light:#a8521e; --a-vist:#4a6f8f;
+  --map-bg:#c9d3cd;
+  --r1:#fde4c4; --r2:#f6b77f; --r3:#e8804c; --r4:#cc4b2a; --r5:#93241a;
+  --f-disp:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111814; --surface:#18211c; --ink:#e4ece7; --muted:#9aaba2; --line:#2b3831; --soft:#1f2a24;
+  --accent:#5cc28f;
+  --c-risco:#e8705b; --c-com:#55b884; --c-light:#e8b43a; --c-prev:#9d8fe0; --c-esp:#7d8b84;
+  --a-com:#55b884; --a-mix:#e2a93a; --a-light:#d9804a; --a-vist:#7ea3c4; --map-bg:#34423a; --r1:#4d2c1f; --r2:#7d3b22; --r3:#b8552c; --r4:#e47c40; --r5:#ffb57c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111814; --surface:#18211c; --ink:#e4ece7; --muted:#9aaba2; --line:#2b3831; --soft:#1f2a24;
+  --accent:#5cc28f;
+  --c-risco:#e8705b; --c-com:#55b884; --c-light:#e8b43a; --c-prev:#9d8fe0; --c-esp:#7d8b84;
+  --a-com:#55b884; --a-mix:#e2a93a; --a-light:#d9804a; --a-vist:#7ea3c4; --map-bg:#34423a; --r1:#4d2c1f; --r2:#7d3b22; --r3:#b8552c; --r4:#e47c40; --r5:#ffb57c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:28px 64px;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{font-family:var(--f-disp);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800;line-height:1.05}
+h2{font-size:24px;font-weight:700}
+h3{font-size:15px;font-weight:700}
+p{margin:0;max-width:68ch}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.lead{font-size:18px;color:var(--ink)}
+.muted{color:var(--muted)}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+header{display:flex;flex-direction:column;gap:12px}
+section{display:flex;flex-direction:column;gap:16px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:6px}
+.fact{border-top:2px solid var(--ink);padding-top:8px;display:flex;flex-direction:column;gap:2px}
+.fact b{font-family:var(--f-disp);font-size:26px;font-weight:800}
+.fact span{font-size:14px;color:var(--muted)}
+/* zone cards */
+.zones{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.zone{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.zone h3{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.zone h3 small{font-family:var(--f-mono);font-weight:400;font-size:12px;color:var(--muted)}
+.zl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.zl li{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:start}
+.zl .k{font-family:var(--f-mono);color:var(--muted);font-size:13px;padding-top:2px}
+.zl .who{min-width:0}
+.zl .who b{display:block;font-weight:600;line-height:1.25;overflow-wrap:anywhere}
+.zl .who .sub{font-size:13px;color:var(--muted)}
+.solo{border-top:1px solid var(--line);padding-top:9px;font-size:13px;color:var(--muted)}
+.solo b{color:var(--ink);font-weight:600}
+td.num{white-space:nowrap}
+.score{font-family:var(--f-disp);font-weight:800;font-size:20px;line-height:1}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:1px 7px 1px 6px;border-radius:999px;border:1px solid currentColor;white-space:nowrap;line-height:1.5}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.a-com{color:var(--a-com)} .a-mix{color:var(--a-mix)} .a-light{color:var(--a-light)} .a-vist{color:var(--a-vist)}
+/* weights */
+.weights{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 16px}
+.w{display:grid;grid-template-columns:14px minmax(150px,210px) minmax(120px,1fr) 42px;gap:4px 12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.w:last-of-type{border-bottom:0}
+.sw{width:12px;height:12px;border-radius:3px}
+.w label{font-weight:700}
+.w .wv{font-family:var(--f-mono);text-align:right}
+.w p{grid-column:2/-1;font-size:14px;color:var(--muted)}
+.w input{width:100%;accent-color:var(--accent)}
+.wfoot{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding:10px 0 12px;border-top:1px solid var(--line)}
+button{font:inherit;font-weight:600;font-size:14px;color:var(--ink);background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button:focus-visible,select:focus-visible,input:focus-visible,tr:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.notice{font-size:14px;color:var(--a-light)}
+/* map */
+.mapbox{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px;overflow-x:auto}
+.mapbox svg{display:block;width:100%;height:auto;min-width:520px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;align-items:center}
+/* risk map */
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{background:var(--surface)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.rgrid{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:14px;align-items:start}
+.rside{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.rtop{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.rtop li{display:grid;grid-template-columns:20px 1fr auto;gap:8px;align-items:baseline;padding:4px 6px;border-radius:5px;cursor:default}
+.rtop li:hover{background:var(--soft)}
+.rtop .k{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.rtop .b{min-width:0;overflow-wrap:anywhere;line-height:1.3}
+.rtop .b small{display:block;color:var(--muted);font-size:12px}
+.rtop .v{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:500}
+.rleg{display:flex;flex-wrap:wrap;gap:4px 0;align-items:center;font-size:12px;font-family:var(--f-mono);color:var(--muted)}
+.rleg span.sw2{display:inline-block;width:34px;height:12px}
+.rleg .lab{margin:0 10px 0 5px}
+#rmap rect.hl{stroke:var(--ink);stroke-width:2.2}
+@media (max-width:820px){.rgrid{grid-template-columns:1fr}}
+/* filters */
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.filters label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted)}
+select,input[type=search]{font:inherit;font-size:15px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px;min-width:0}
+input[type=search]{width:220px;max-width:100%}
+/* table */
+.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:820px}
+th{font-family:var(--f-mono);font-weight:500;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:bottom}
+th.r,td.r{text-align:right}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tbody tr.row{cursor:pointer}
+tbody tr.row:hover{background:var(--soft)}
+tr.open{background:var(--soft)}
+td.pos{font-family:var(--f-mono);color:var(--muted);width:40px}
+td.who b{font-weight:600}
+td.who span{display:block;color:var(--muted);font-size:13px}
+.bar{display:flex;height:10px;width:130px;background:var(--soft);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%}
+.sc{display:flex;align-items:center;gap:8px}
+.sc b{font-family:var(--f-disp);font-weight:800;font-size:17px;width:28px;text-align:right}
+td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
+td.z{color:var(--muted)}
+tr.det td{padding:4px 10px 14px 50px;border-bottom:1px solid var(--line);background:var(--soft)}
+.why{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.why ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+.why a{color:var(--accent)}
+.more{align-self:flex-start}
+/* validation */
+.vt{min-width:560px}
+.vt td.n b{color:var(--accent)}
+.note{font-size:14px;color:var(--muted);border-left:3px solid var(--line);padding-left:10px}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;max-width:76ch}
+.bands td{white-space:nowrap}
+.mb{display:inline-block;width:90px;height:8px;background:var(--soft);border-radius:2px;margin-right:8px;vertical-align:middle;overflow:hidden}
+.mb i{display:block;height:100%;background:var(--c-risco)}
+.sc small{display:block;font-size:12px;color:var(--muted);white-space:nowrap}
+.lim{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;max-width:76ch}
+@media (max-width:560px){
+  .w{grid-template-columns:14px 1fr 42px}
+  .w input{grid-column:2/-1;grid-row:2}
+  .w p{grid-row:3}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* v5: manager view */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(440px,100%),1fr));gap:14px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.ph{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:start}
+.rk{font-family:var(--f-disp);font-weight:800;font-size:22px;color:var(--muted);line-height:1.1}
+.ph h3{font-size:18px;line-height:1.2;overflow-wrap:anywhere}
+.ph .sub{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.nota{text-align:right;line-height:1}
+.nota b{display:block;font-family:var(--f-disp);font-size:30px;font-weight:800}
+.nota small{font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pc{display:flex;flex-direction:column;gap:5px;font-size:15px}
+.pc h4{margin:0;font-family:var(--f-mono);font-weight:500;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.pc ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+.pc p{margin:0}
+.risk{background:var(--soft);border-radius:8px;padding:10px 12px}
+.drow{display:grid;grid-template-columns:max-content max-content;gap:5px 12px;align-items:center;font-size:13px;color:var(--muted)}
+.dots{display:inline-flex;gap:3px;vertical-align:middle}
+.dots i{display:block;width:10px;height:10px;border-radius:50%;border:1.5px solid currentColor;opacity:.55}
+.dots i.on{background:currentColor;opacity:1}
+.q-col{color:var(--c-risco)} .l-col{color:var(--c-light)}
+.tn{font-size:13px;color:var(--ink);margin-left:6px;white-space:nowrap}
+.maplink{font-size:14px;color:var(--accent);align-self:flex-start}
+.solo2{font-size:15px;background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:12px 16px}
+.solo2 b{font-weight:600}
+.cons{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:14px}
+.cbox{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--c-esp);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.cbox.q{border-top-color:var(--c-risco)} .cbox.l{border-top-color:var(--c-light)} .cbox.f{border-top-color:var(--c-com)}
+.cbox h3{font-size:17px}
+.cbox p{font-size:15px}
+.cbox .big{font-family:var(--f-disp);font-weight:800;font-size:24px;line-height:1.1}
+.ladder,.srv{min-width:560px}
+.ladder td,.srv td{white-space:nowrap}
+.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;max-width:76ch}
+.steps li{padding-left:4px}
+details.apx{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0 18px}
+details.apx>summary{cursor:pointer;list-style:none;padding:16px 0;font-family:var(--f-disp);font-weight:700;font-size:20px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+details.apx>summary::-webkit-details-marker{display:none}
+details.apx>summary::after{content:"+";font-family:var(--f-mono);font-size:22px;color:var(--muted)}
+details.apx[open]>summary::after{content:"−"}
+details.apx>summary small{display:block;font-family:var(--f-body);font-weight:400;font-size:14px;color:var(--muted)}
+.apx-in{display:flex;flex-direction:column;gap:40px;padding:6px 0 24px}
+.min0{min-width:0}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Chamados 1746 de manejo arbóreo · dados até <span id="ate"></span></div>
+  <h1>Onde podar primeiro no Rio, e por quê</h1>
+  <p class="lead">Esta página mostra os lugares onde a falta de poda tem mais chance de virar problema nos próximos meses: árvore caindo ou árvore encostando na fiação elétrica. Para cada lugar, explica o motivo, o que costuma acontecer quando nada é feito e quem precisa agir.</p>
+  <p class="note">Análise exploratória do projeto de extensão <b>Ciência de Dados para Cidades Inteligentes</b> (UFRJ), feita com dados abertos do 1746. Não é um dado oficial da Prefeitura, da COMLURB nem da Light.</p>
+  <div class="facts" id="facts"></div>
+</header>
+
+<section id="top">
+  <div>
+    <h2>Os 10 lugares mais urgentes</h2>
+    <p class="muted">Cada lugar é um CEP. A nota vai de 0 a 100 e soma os sinais de problema registrados no 1746: pedidos de poda esperando, pedidos que dependem da Light e chamados de risco ou de árvore caída. Escolha uma zona para ver os 10 mais urgentes dela.</p>
+  </div>
+  <div class="seg" id="tz" role="group" aria-label="Zona"></div>
+  <div class="pgrid" id="cards"></div>
+  <div class="solo2" id="solo"></div>
+</section>
+
+<section id="consequencias">
+  <div>
+    <h2>O que pode acontecer se não podar</h2>
+    <p class="muted">Árvore sem poda não é só um pedido atrasado. Os dados do 1746 mostram três consequências.</p>
+  </div>
+  <div class="cons">
+    <div class="cbox q"><h3>A árvore cai</h3><p>Galhos ou a árvore inteira caem sobre calçadas, carros, casas e fios, e bloqueiam a rua. O risco se concentra no verão.</p><p><span class="big">57%</span><br>das árvores caídas do ano acontecem de dezembro a abril. Janeiro tem quase 4 vezes mais quedas que setembro.</p></div>
+    <div class="cbox l"><h3>A árvore encosta na fiação</h3><p>Galhos nos fios podem provocar falta de luz e curto-circuito. A poda só pode ser feita com a rede desligada, o que depende da Light, e por isso esses pedidos ficam parados.</p><p><span class="big">Mais de 2 anos</span><br>é a espera média desses pedidos. E o problema se repete: 55% dos novos casos de 2025 surgiram em trechos de rua que já tinham outro esperando.</p></div>
+    <div class="cbox f"><h3>A fila cresce</h3><p>Quem pediu continua esperando, volta a ligar e o problema aumenta enquanto isso.</p><p><span class="big" id="fila">–</span><br>pedidos de poda esperando hoje: <span id="fila-com">–</span> com a COMLURB (abertos há até 2 anos) e <span id="fila-light">–</span> com a Light.</p></div>
+  </div>
+  <div>
+    <h3>Quanto maior a nota, mais o problema aconteceu depois</h3>
+    <p class="muted">Refizemos a nota com os dados de 8 datas diferentes de 2024 e 2025 e olhamos o ano seguinte. De cada 10 lugares em cada faixa de nota, quantos tiveram o problema. A última coluna mostra quantos lugares estão em cada faixa hoje.</p>
+  </div>
+  <div class="tbl"><table class="ladder"><thead><tr><th>Nota do lugar</th><th>Teve árvore caída</th><th>Teve árvore na fiação</th><th class="r">Lugares hoje</th></tr></thead><tbody><tr><td class="num">80–100</td><td><span class="dots q-col" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="tn">4 em 10</span></td><td><span class="dots l-col" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="tn">8 em 10</span></td><td class="n" id="lb4">–</td></tr><tr><td class="num">60–79</td><td><span class="dots q-col" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="tn">3 em 10</span></td><td><span class="dots l-col" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="tn">6 em 10</span></td><td class="n" id="lb3">–</td></tr><tr><td class="num">40–59</td><td><span class="dots q-col" aria-hidden="true"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="tn">2 em 10</span></td><td><span class="dots l-col" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="tn">5 em 10</span></td><td class="n" id="lb2">–</td></tr><tr><td class="num">20–39</td><td><span class="dots q-col" aria-hidden="true"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="tn">1 em 10</span></td><td><span class="dots l-col" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="tn">3 em 10</span></td><td class="n" id="lb1">–</td></tr><tr><td class="num">0–19</td><td><span class="dots q-col" aria-hidden="true"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="tn">1 em 10</span></td><td><span class="dots l-col" aria-hidden="true"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="tn">1 em 10</span></td><td class="n" id="lb0">–</td></tr></tbody></table></div>
+  <div>
+    <h3>Atender a tempo reduz as quedas</h3>
+    <p class="muted">Lugares com a mesma nota, comparados de acordo com o que aconteceu depois: onde a COMLURB atendeu a maior parte dos pedidos em até 3 meses, houve menos árvores caídas nos 9 meses seguintes do que onde nada foi atendido. Testes de jul/2024 a abr/2025.</p>
+  </div>
+  <div class="tbl"><table class="srv"><thead><tr><th>Nota do lugar</th><th>Maior parte atendida em até 3 meses</th><th>Nada atendido em 3 meses</th></tr></thead><tbody><tr><td class="num">60–100</td><td><span class="mb"><i style="width:43%;background:var(--c-com)"></i></span>22%</td><td><span class="mb"><i style="width:54%"></i></span>27%</td></tr><tr><td class="num">40–59</td><td><span class="mb"><i style="width:32%;background:var(--c-com)"></i></span>16%</td><td><span class="mb"><i style="width:36%"></i></span>18%</td></tr><tr><td class="num">20–39</td><td><span class="mb"><i style="width:20%;background:var(--c-com)"></i></span>10%</td><td><span class="mb"><i style="width:29%"></i></span>14%</td></tr><tr><td class="num">0–19</td><td><span class="mb"><i style="width:16%;background:var(--c-com)"></i></span>8%</td><td><span class="mb"><i style="width:18%"></i></span>9%</td></tr></tbody></table></div>
+  <p class="muted">É um indício, não uma prova: os lugares atendidos podem ser diferentes dos outros em coisas que os dados não mostram. Mas a diferença aparece em todas as faixas de nota.</p>
+</section>
+
+<section id="agir">
+  <h2>Como usar esta lista</h2>
+  <ol class="steps">
+    <li>Escolha a zona da equipe e comece pelos lugares de nota mais alta.</li>
+    <li>Onde aparece <span class="chip a-com">COMLURB pode ir já</span>, nenhum pedido depende da fiação: mande a equipe.</li>
+    <li>Onde aparece <span class="chip a-mix">COMLURB + Light</span>, a COMLURB poda o que não encosta na fiação e envia o restante à Light para programar o desligamento. Juntar lugares próximos no mesmo desligamento evita cortes de energia repetidos.</li>
+    <li>Onde aparece <span class="chip a-light">Precisa da Light</span>, todos os pedidos envolvem a fiação: leve a lista direto à Light.</li>
+    <li>Onde aparece <span class="chip a-vist">Vistoria de risco</span>, há chamados de risco ou de árvore caída, mas nenhuma poda pedida: mande um técnico avaliar.</li>
+    <li>Faça isso antes de dezembro, quando começa o período com mais quedas.</li>
+  </ol>
+</section>
+
+<section id="risco">
+  <div>
+    <h2>Mapa de risco da cidade</h2>
+    <p class="muted">A cidade dividida em quadrados de cerca de 1 km. Escolha a camada: quanto mais forte a cor do quadrado, maior o risco. Passe o mouse ou toque num quadrado para ver os números dele.</p>
+  </div>
+  <div class="seg" id="rseg"></div>
+  <p id="rdesc"></p>
+  <div class="rgrid">
+    <div class="mapbox"><svg id="rmap" role="img" aria-label="Mapa de risco do Rio em quadrados de 1 km"></svg></div>
+    <div class="rside"><h3 id="rtitle">Quadrados mais críticos</h3><ol class="rtop" id="rtop"></ol></div>
+  </div>
+  <div class="rleg" id="rleg"></div>
+</section>
+
+<section>
+  <div>
+    <h2>Todos os lugares</h2>
+    <p class="muted">Todos os CEPs com algum pedido de árvore. Use os filtros para ver só a sua zona ou um tipo de ação, e clique numa linha para ver o motivo e o risco. Em “Ordenar por”, a opção “Posição dentro de cada zona” alterna as zonas, para que as regiões que registram menos pedidos não fiquem escondidas. No mapa, os pontos coloridos são os lugares mostrados na lista, com a cor de quem precisa agir.</p>
+  </div>
+  <div class="filters">
+    <label for="fz">Zona<select id="fz"></select></label>
+    <label for="fa">Quem precisa agir<select id="fa"></select></label>
+    <label for="fo">Ordenar por<select id="fo"><option value="cidade">Nota na cidade</option><option value="zona">Posição dentro de cada zona</option></select></label>
+    <label for="fq">Buscar rua, bairro ou CEP<input type="search" id="fq" placeholder="ex.: Grajaú, 20561"></label>
+  </div>
+  <div class="mapbox"><svg id="map" role="img" aria-label="Mapa do Rio com os CEPs prioritários"></svg></div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>#</th><th>CEP</th><th>Lugar</th><th>Nota</th><th class="r">Esperando a COMLURB</th><th class="r">Esperando a Light</th><th class="r">Risco ou queda (12 meses)</th><th>Chance de árvore caída</th><th>Quem precisa agir</th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><button class="more" id="more">Mostrar mais 100</button><span class="muted" id="count"></span></div>
+</section>
+
+<section id="cuidados">
+  <h2>Cuidados ao usar</h2>
+  <ul class="lim">
+    <li><b>“Esperando a Light” é uma aproximação.</b> São pedidos com status Pendente no 1746, que a COMLURB não pode executar por envolver a fiação. Não temos os dados da Light sobre a rede nem sobre os desligamentos.</li>
+    <li><b>Algumas regiões registram menos.</b> Na Zona Oeste, poucos pedidos ficam como Pendentes e muitos são fechados como “informações incorretas”, então ela aparece menos no topo da cidade. Para comparar dentro de cada região, escolha a zona no topo da página ou use “Posição dentro de cada zona” na lista.</li>
+    <li><b>A lista não evita todas as quedas.</b> A maior parte das árvores caídas acontece em lugares sem pedidos antes. Podar pela lista reduz os problemas com a fiação, mas não substitui as equipes de prontidão em dias de temporal (veja o mapa de risco).</li>
+  </ul>
+</section>
+
+<details class="apx">
+  <summary><span>Para quem quer entender a nota<small>Como ela é calculada, como foi testada, o que não entrou e todos os limites.</small></span></summary>
+  <div class="apx-in">
+<section class="apx-s">
+  <div>
+    <h2>Como a nota é calculada</h2>
+    <p class="muted">Cada sinal vale de 0 a 1 e é multiplicado pelo seu peso. Nos sinais de contagem, cada pedido a mais conta um pouco menos que o anterior: por exemplo, no sinal de poda aberta, 1 pedido já vale 32% da parte, 3 valem 63% e 8 ou mais valem tudo. Os pesos sugeridos foram escolhidos com os dados: testamos combinações com o que se sabia em julho de 2024 e ficamos com a que mais acertou o ano seguinte, conferindo depois em 8 períodos de 2024 e 2025. O resultado dá mais peso aos pedidos travados na Light. Mova os pesos para ver a lista mudar.</p>
+  </div>
+  <div class="weights" id="weights"></div>
+</section>
+
+<section class="apx-s">
+  <div>
+    <h2>Esse ranking teria acertado?</h2>
+    <p class="muted">Refizemos a nota usando só o que se sabia em 1º de janeiro e em 1º de julho de 2025, inclusive quais pedidos estavam abertos naquelas datas, e olhamos o que aconteceu nos 12 meses seguintes nos 200 CEPs do topo. Os pesos foram escolhidos com dados de 2024, antes desses testes. Valores: média dos dois testes.</p>
+  </div>
+  <div class="tbl">
+    <table class="vt">
+      <thead><tr><th>Nos 12 meses seguintes, o CEP teve…</th><th class="r">Pesos atuais</th><th class="r">Pesos anteriores</th><th class="r">Só risco recente</th><th class="r">Só travados na Light</th><th class="r">CEP qualquer</th></tr></thead>
+      <tbody>
+        <tr><td>árvore caída</td><td class="n"><b>34%</b></td><td class="n">31%</td><td class="n">29%</td><td class="n">32%</td><td class="n">12%</td></tr>
+        <tr><td>chamado de risco, remoção ou queda</td><td class="n"><b>92%</b></td><td class="n">91%</td><td class="n">77%</td><td class="n">86%</td><td class="n">46%</td></tr>
+        <tr><td>novo pedido travado na Light</td><td class="n"><b>65%</b></td><td class="n">62%</td><td class="n">37%</td><td class="n">63%</td><td class="n">19%</td></tr>
+        <tr><td>2 ou mais pedidos de poda</td><td class="n"><b>97%</b></td><td class="n">96%</td><td class="n">76%</td><td class="n">94%</td><td class="n">49%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Os pesos atuais acertam mais que os anteriores nas quatro perguntas e mais que qualquer sinal sozinho. Olhar só o risco recente quase não antecipa os problemas com a rede elétrica; olhar só a Light chega perto, mas antecipa menos as emergências.</p>
+  <div>
+    <h3>O que cada faixa de nota significa</h3>
+    <p class="muted">Com os pesos atuais, nas 8 datas de corte de 2024 e 2025: entre os CEPs de cada faixa de nota, quantos tiveram cada problema nos 12 meses seguintes. CEPs: média por data de corte.</p>
+  </div>
+  <div class="tbl">
+    <table class="vt bands">
+      <thead><tr><th>Nota</th><th class="r">CEPs</th><th>Árvore caída</th><th>Novo pedido travado na Light</th><th>Chamado de risco ou queda</th></tr></thead>
+      <tbody><tr><td class="num">80–100</td><td class="n">47</td><td><span class="mb"><i style="width:44%"></i></span>44%</td><td><span class="mb"><i style="width:82%;background:var(--c-light)"></i></span>82%</td><td><span class="mb"><i style="width:95%;background:var(--c-esp)"></i></span>95%</td></tr><tr><td class="num">60–79</td><td class="n">314</td><td><span class="mb"><i style="width:33%"></i></span>33%</td><td><span class="mb"><i style="width:64%;background:var(--c-light)"></i></span>64%</td><td><span class="mb"><i style="width:88%;background:var(--c-esp)"></i></span>88%</td></tr><tr><td class="num">40–59</td><td class="n">1.029</td><td><span class="mb"><i style="width:21%"></i></span>21%</td><td><span class="mb"><i style="width:47%;background:var(--c-light)"></i></span>47%</td><td><span class="mb"><i style="width:72%;background:var(--c-esp)"></i></span>72%</td></tr><tr><td class="num">20–39</td><td class="n">2.610</td><td><span class="mb"><i style="width:15%"></i></span>15%</td><td><span class="mb"><i style="width:27%;background:var(--c-light)"></i></span>27%</td><td><span class="mb"><i style="width:55%;background:var(--c-esp)"></i></span>55%</td></tr><tr><td class="num">0–19</td><td class="n">4.992</td><td><span class="mb"><i style="width:9%"></i></span>9%</td><td><span class="mb"><i style="width:11%;background:var(--c-light)"></i></span>11%</td><td><span class="mb"><i style="width:35%;background:var(--c-esp)"></i></span>35%</td></tr></tbody>
+    </table>
+  </div>
+  <p>Um CEP com nota 80 ou mais teve quase 5 vezes mais chance de ter árvore caída no ano seguinte do que um CEP com nota abaixo de 20, e quase 8 vezes mais chance de ter um pedido novo travado na Light.</p>
+  <div>
+    <h3>Os pesos valem em outros períodos?</h3>
+    <p class="muted">Refizemos o teste em 8 datas de corte, de janeiro de 2024 a setembro de 2025, com o modelo de previsão retreinado em cada uma sem ver o futuro. Acerto médio: média do acerto em árvore caída, chamado de risco ou queda e novo pedido travado na Light, nos 200, 500 e 1.000 CEPs do topo.</p>
+  </div>
+  <div class="mapbox"><svg id="robchart" role="img" aria-label="Acerto médio por período: pesos atuais, pesos anteriores e melhor combinação possível em cada período"></svg></div>
+  <p>Em todos os 8 períodos, os pesos atuais acertaram mais que os anteriores e ficaram entre os 7% melhores de 3.000 combinações sorteadas. A melhor combinação nos 8 períodos juntos seria risco 25, poda aberta 10, Light 50, previsão 10 e espera 5. Ela acerta em média 0,5 ponto a mais, todo o ganho em prever pedidos novos travados na Light. Mantivemos os pesos atuais porque eles dão mais peso a quem já está esperando poda da COMLURB, algo que essa medida de acerto não conta. Os melhores pesos mudam com o tempo, então vale refazer este teste a cada atualização dos dados.</p>
+</section>
+
+<section class="apx-s">
+  <div>
+    <h2>O que testamos e não entrou</h2>
+    <p class="muted">Cada ideia foi testada do mesmo jeito: nota refeita com dados de 2024, conferida nos testes de 2025. Nenhuma destas melhorou o acerto o suficiente para justificar a complexidade.</p>
+  </div>
+  <ul class="lim">
+    <li><b>Vizinhança:</b> pedidos travados na Light num raio de 150 m e quedas num raio de 300 m do CEP. Repetem o que o próprio CEP já mostra.</li>
+    <li><b>Quedas em verões anteriores no quadrado de 1 km.</b> Úteis para prontidão em dias de temporal (veja o mapa de risco), mas não para escolher onde podar.</li>
+    <li><b>Cobertura de árvores do setor censitário.</b> Sozinha acerta pouco mais que um sorteio; combinada, não muda o topo.</li>
+    <li><b>Contar endereços em vez de chamados</b>, para não contar várias vezes a mesma árvore. Resultado praticamente igual.</li>
+    <li><b>Pedidos fechados como “não há previsão para execução”.</b> Não antecipam novos problemas.</li>
+    <li><b>Os 3.901 pedidos fechados em massa em outubro de 2025.</b> Os CEPs que só tinham esses pedidos tiveram tão poucos pedidos novos travados na Light quanto os demais, então seguem fora da conta.</li>
+    <li><b>Um modelo de aprendizado de máquina no lugar da soma com pesos.</b> Ganhou pouco e de forma instável entre os testes, e tornaria a nota difícil de explicar.</li>
+  </ul>
+</section>
+
+<section class="apx-s">
+  <h2>Todos os limites conhecidos</h2>
+  <ul class="lim">
+    <li><b>“Travado na Light”</b> são pedidos com status Pendente no 1746. Tratamos esse status como “depende da Light” porque a COMLURB não pode podar perto de fiação energizada. É uma aproximação: não temos os dados de desligamento nem o traçado da rede da Light.</li>
+        <li><b>A nota mostra onde as pessoas pediram e como cada região registra os pedidos.</b> Na Zona Oeste, só 5% dos pedidos de poda ficam Pendentes, contra 20% na Grande Tijuca, e 28% são fechados como “informações incorretas”, contra 8% na Zona Sul. A Zona Oeste tem 26% dos pedidos de poda, mas poucos CEPs no topo da cidade. Para comparar dentro de cada região, use “Posição dentro de cada zona” na lista.</li>
+    <li><b>A maior parte das quedas acontece fora do topo.</b> Os 500 CEPs de maior nota concentraram só 13% a 17% das árvores caídas do ano seguinte. Podar pelo ranking reduz os conflitos com a rede, mas não substitui a prontidão em dias de temporal.</li>
+    <li><b>Pedidos antigos.</b> Contamos poda aberta só até 2 anos de idade; pedidos Pendentes entram com qualquer idade. Alguns podem já ter sido resolvidos sem baixa no sistema. Em 13 e 14/10/2025, cerca de 4 mil pedidos antigos foram fechados em massa e não entram na conta.</li>
+    <li><b>O CEP vem da localização do chamado</b>, cruzada com a base de CEPs. Um mesmo logradouro pode ter vários CEPs.</li>
+    <li><b>Outubro abre a temporada de chuvas.</b> As quedas sobem até o pico de janeiro, quando o número de pedidos que dependem da Light chega a quase o dobro do de setembro. Podar o topo da lista agora reduz o risco no verão.</li>
+  </ul>
+</section>
+  </div>
+</details>
+<footer>Fonte: chamados de manejo arbóreo da Central 1746 (set/2022 a set/2026), publicados no Data.Rio, a base de dados abertos da Prefeitura do Rio. Pedidos agregados por CEP; nenhum dado pessoal é exibido. Atualizado com dados até <span id="ate2"></span>.</footer>
+</div>
+
+<script type="application/json" id="data">__DATA__</script>
+<script type="application/json" id="cells">__CELLS__</script>
+<script>
+(function(){
+const RAW=JSON.parse(document.getElementById('data').textContent);
+const C=RAW.cols; const D=RAW.rows.map(r=>{const o={};C.forEach((c,i)=>o[c]=r[i]);return o;});
+document.getElementById('ate').textContent=RAW.ate;document.getElementById('ate2').textContent=RAW.ate;
+const clamp=v=>Math.max(0,Math.min(1,v));
+const L=(v,cap)=>clamp(Math.log1p(v)/Math.log1p(cap));
+const COMP=[
+ {k:'risco',nome:'Risco recente',cor:'--c-risco',peso:25,desc:'Chamados de avaliação de risco, remoção e árvore caída nos últimos 12 meses. Árvore caída conta em dobro. Parte cheia com 12 ou mais.',f:r=>L(r.risco+r.queda,12)},
+ {k:'com',nome:'Poda aberta (COMLURB)',cor:'--c-com',peso:15,desc:'Pedidos de poda abertos ou em andamento, com até 2 anos, que a COMLURB pode executar. Parte cheia com 8 ou mais.',f:r=>L(r.com,8)},
+ {k:'light',nome:'Travado na Light',cor:'--c-light',peso:40,desc:'Pedidos de poda com status Pendente, que esperam a Light por envolver a rede elétrica. Parte cheia com 12 ou mais.',f:r=>L(r.light,12)},
+ {k:'prev',nome:'Previsão de novo pedido Light',cor:'--c-prev',peso:10,desc:'Chance, pelo modelo de aprendizado de máquina, de a quadra mais arriscada do CEP ter um novo pedido travado na Light em 12 meses. Parte cheia a partir de 55%.',f:r=>clamp((r.prob-0.07)/0.48)},
+ {k:'esp',nome:'Tempo de espera',cor:'--c-esp',peso:10,desc:'Há quantos dias o pedido de poda mais antigo ainda aberto na COMLURB espera. Parte cheia com 1 ano ou mais.',f:r=>clamp(r.esp/365)}
+];
+const DEF=COMP.map(c=>c.peso);
+D.forEach(r=>{r.v=COMP.map(c=>c.f(r));
+  r.act=r.light>0&&r.com>0?'mix':r.light>0?'light':r.com>0?'com':'vist';
+  r.cepf=r.cep.slice(0,5)+'-'+r.cep.slice(5);
+  r.s=(r.cep+' '+r.cepf+' '+r.rua+' '+r.bairro+' '+r.ra).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();});
+const ACT={mix:['COMLURB + Light','a-mix'],com:['COMLURB pode ir já','a-com'],light:['Precisa da Light','a-light'],vist:['Vistoria de risco','a-vist']};
+const ACTDESC={mix:'A COMLURB poda o que não encosta na fiação; o restante precisa de desligamento programado com a Light.',com:'Nenhum pedido envolve a fiação: a COMLURB pode resolver sozinha.',light:'Todos os pedidos envolvem a fiação: só avança com desligamento programado pela Light.',vist:'Há chamados de risco ou de árvore caída, mas nenhuma poda pedida: um técnico deve avaliar.'};
+const ZN={'Centro':'Centro','Sul':'Zona Sul','Tijuca/Grande Tijuca':'Grande Tijuca','Norte':'Zona Norte','Oeste':'Zona Oeste','Oeste (Barra/Jacarepaguá)':'Barra e Jacarepaguá'};
+const zn=z=>ZN[z]||'zona não identificada';
+const CAL={q:[-2.638,2.834],l:[-2.664,5.273]}; const sig=x=>1/(1+Math.exp(-x));
+const ZONES=['Centro','Sul','Tijuca/Grande Tijuca','Norte','Oeste','Oeste (Barra/Jacarepaguá)'];
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const fmt=n=>n.toLocaleString('pt-BR');
+const chip=a=>`<span class="chip ${ACT[a][1]}">${ACT[a][0]}</span>`;
+let W=DEF.slice(), sorted=[], sortedZ=[], shown=100, tzSel='';
+D.forEach(r=>{r.s0=r.v.reduce((a,v,i)=>a+v*DEF[i],0)/DEF.reduce((a,b)=>a+b,0)*100;r.pq=sig(CAL.q[0]+CAL.q[1]*r.s0/100);r.pl=sig(CAL.l[0]+CAL.l[1]*r.s0/100);});
+function dur(d){if(d<60)return `${d} dias`;const m=Math.round(d/30.44);if(m<12)return `${m} meses`;const y=Math.floor(m/12),mm=m%12;return `${y} ano${y>1?'s':''}`+(mm?` e ${mm} ${mm>1?'meses':'mês'}`:'');}
+const ten=p=>{const k=Math.round(p*10);return k<1?'menos de 1 em cada 10':`${k} em cada 10`;};
+const dots=(p,cls)=>{const k=Math.round(p*10);return `<span class="dots ${cls}" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i class="${i<k?'on':''}"></i>`).join('')}</span>`;};
+function reasons(r){const it=[];const pl=n=>n>1?'s':'';
+  if(r.light)it.push([r.pts[2],`${r.light} pedido${pl(r.light)} de poda ${r.light>1?'dependem':'depende'} da Light por envolver a fiação; o mais antigo espera há ${dur(r.lmax)}`]);
+  if(r.com)it.push([r.pts[1]+r.pts[4],`${r.com} pedido${pl(r.com)} de poda ${r.com>1?'esperam':'espera'} a COMLURB; o mais antigo, há ${dur(r.esp)}`]);
+  if(r.risco)it.push([r.pts[0],`${r.risco} chamado${pl(r.risco)} de risco, remoção ou árvore caída no último ano`+(r.queda?` (${r.queda} árvore${pl(r.queda)} caída${pl(r.queda)})`:'')]);
+  if(r.prob>=0.3)it.push([r.pts[3],`pelo histórico das quadras, ${Math.round(r.prob*100)}% de chance de surgir outro pedido envolvendo a fiação em 12 meses`]);
+  return it.sort((a,b)=>b[0]-a[0]).map(x=>x[1]);}
+const riskHTML=r=>`<p>Em lugares com nota parecida, <b>${ten(r.pq)}</b> tiveram árvore caída e <b>${ten(r.pl)}</b> tiveram nova árvore encostando na fiação no ano seguinte.</p><div class="drow"><span>Árvore caída</span>${dots(r.pq,'q-col')}<span>Árvore na fiação</span>${dots(r.pl,'l-col')}</div>`;
+const BANDS=[["0–19", 5045, 8, 9, 34], ["20–39", 2686, 14, 23, 54], ["40–59", 1055, 22, 41, 71], ["60–79", 312, 28, 59, 87], ["80–100", 44, 47, 71, 98]];
+
+function score(){const tot=W.reduce((a,b)=>a+b,0)||1;
+  D.forEach(r=>{let s=0;r.pts=r.v.map((v,i)=>{const p=v*W[i]/tot*100;s+=p;return p;});r.score=s;});
+  sorted=D.slice().sort((a,b)=>b.score-a.score);sorted.forEach((r,i)=>r.g=i+1);
+  const zc={};sorted.forEach(r=>{zc[r.zona]=(zc[r.zona]||0)+1;r.zr=zc[r.zona];});
+  sorted.forEach(r=>{r.zn=zc[r.zona];r.zp=r.zr/r.zn;});
+  sortedZ=sorted.slice().sort((a,b)=>a.zp-b.zp||b.score-a.score);}
+
+// weights UI
+const wbox=document.getElementById('weights');
+wbox.innerHTML=COMP.map((c,i)=>`<div class="w"><span class="sw" style="background:var(${c.cor})"></span><label for="w${i}">${c.nome}</label><input type="range" id="w${i}" min="0" max="50" step="5" value="${c.peso}"><span class="wv" id="wv${i}">${c.peso}</span><p>${c.desc}</p></div>`).join('')+
+ `<div class="wfoot"><span class="muted" id="wsum"></span><span class="notice" id="wnote" hidden>Pesos alterados: a validação mais abaixo vale para os pesos sugeridos.</span><button id="reset">Voltar aos pesos sugeridos</button></div>`;
+COMP.forEach((c,i)=>document.getElementById('w'+i).addEventListener('input',e=>{W[i]=+e.target.value;document.getElementById('wv'+i).textContent=W[i];update();}));
+document.getElementById('reset').onclick=()=>{W=DEF.slice();COMP.forEach((c,i)=>{document.getElementById('w'+i).value=W[i];document.getElementById('wv'+i).textContent=W[i];});update();};
+
+// legend
+
+
+// filters
+const fz=document.getElementById('fz'),fa=document.getElementById('fa'),fq=document.getElementById('fq'),fo=document.getElementById('fo');
+fz.innerHTML='<option value="">Todas</option>'+ZONES.map(z=>`<option>${esc(z)}</option>`).join('');
+fa.innerHTML='<option value="">Todos</option>'+Object.keys(ACT).map(a=>`<option value="${a}">${ACT[a][0]}</option>`).join('');
+[fz,fa,fo].forEach(el=>el.addEventListener('change',()=>{shown=100;render();}));
+fq.addEventListener('input',()=>{shown=100;render();});
+document.getElementById('more').onclick=()=>{shown+=100;render();};
+
+function filtered(){const z=fz.value,a=fa.value,q=fq.value.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();
+  return (fo.value==='zona'?sortedZ:sorted).filter(r=>(!z||r.zona===z)&&(!a||r.act===a)&&(!q||r.s.includes(q)));}
+
+function facts(){const t=sorted.slice(0,100);const sum=f=>t.reduce((a,r)=>a+f(r),0);
+  const com=sum(r=>r.com),li=sum(r=>r.light);
+  document.getElementById('facts').innerHTML=
+   `<div class="fact"><b>${Math.round(sum(r=>r.pq))} de 100</b><span>dos lugares mais urgentes devem ter árvore caída nos próximos 12 meses, se repetirem o que aconteceu em lugares parecidos em 2024 e 2025</span></div>`+
+   `<div class="fact"><b>${Math.round(sum(r=>r.pl))} de 100</b><span>devem ter nova árvore encostando na fiação no mesmo período</span></div>`+
+   `<div class="fact"><b>${fmt(com+li)}</b><span>pedidos de poda esperando nesses 100 lugares: ${fmt(com)} com a COMLURB e ${fmt(li)} com a Light</span></div>`+
+   `<div class="fact"><b>57%</b><span>das árvores caídas do ano acontecem de dezembro a abril; o melhor momento para podar é antes do verão</span></div>`;
+  const tc=D.reduce((a,r)=>a+r.com,0),tl=D.reduce((a,r)=>a+r.light,0);
+  document.getElementById('fila').textContent=fmt(tc+tl);document.getElementById('fila-com').textContent=fmt(tc);document.getElementById('fila-light').textContent=fmt(tl);
+  const cnt=[0,0,0,0,0];D.forEach(r=>cnt[Math.min(4,Math.floor(r.s0/20))]++);cnt.forEach((c,b)=>{const el=document.getElementById('lb'+b);if(el)el.textContent=fmt(c);});}
+
+const tz=document.getElementById('tz');
+tz.innerHTML=[['','Cidade inteira'],...ZONES.map(z=>[z,ZN[z]])].map(([v,l])=>`<button data-z="${esc(v)}" aria-pressed="${v===tzSel}">${l}</button>`).join('');
+tz.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tzSel=b.dataset.z;tz.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.z===tzSel));cards();});
+function cards(){const list=tzSel?sorted.filter(r=>r.zona===tzSel):sorted;
+  document.getElementById('cards').innerHTML=list.slice(0,10).map((r,i)=>`<article class="pcard"><div class="ph"><span class="rk">${i+1}</span><div class="min0"><h3>${esc(r.rua)}</h3><span class="sub">${esc(r.bairro)} · ${zn(r.zona)} · CEP ${r.cepf}</span></div><div class="nota"><b>${Math.round(r.score)}</b><small>nota</small></div></div>`+
+   `<div class="pc"><h4>Por que está aqui</h4><ul>${reasons(r).map(s=>`<li>${s}</li>`).join('')}</ul></div>`+
+   `<div class="pc risk"><h4>Se não podar</h4>${riskHTML(r)}</div>`+
+   `<div class="pc"><h4>Quem precisa agir</h4><p>${chip(r.act)}</p><p>${ACTDESC[r.act]}</p></div>`+
+   `<a class="maplink" href="https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lon}" target="_blank" rel="noopener">Ver o local no Google Maps</a></article>`).join('');
+  const solo=list.filter(r=>r.act==='com').slice(0,3);
+  document.getElementById('solo').innerHTML=solo.length?`<b>Onde a COMLURB pode ir já, sem depender da Light${tzSel?' ('+ZN[tzSel]+')':''}:</b> `+solo.map(r=>`${esc(r.rua)} (${esc(r.bairro)}, nota ${Math.round(r.score)})`).join('; ')+'.':'';}
+
+// map
+const X0=-43.80,X1=-43.09,Y0=-23.085,Y1=-22.74,MW=760,MH=Math.round(MW*(Y1-Y0)/((X1-X0)*Math.cos(22.9*Math.PI/180)));
+const px=lon=>((lon-X0)/(X1-X0)*MW).toFixed(1), py=lat=>((Y1-lat)/(Y1-Y0)*MH).toFixed(1);
+const map=document.getElementById('map');map.setAttribute('viewBox',`0 0 ${MW} ${MH}`);
+map.innerHTML=`<g fill="var(--map-bg)">${D.map(r=>`<circle cx="${px(r.lon)}" cy="${py(r.lat)}" r="1.3"/>`).join('')}</g><g id="hot"></g>`;
+const ACOL={mix:'--a-mix',com:'--a-com',light:'--a-light',vist:'--a-vist'};
+
+let openCep=null;
+function why(r){
+  const parts=COMP.map((c,i)=>`${c.nome}: ${r.pts[i].toFixed(1).replace('.',',')}`).join(' · ');
+  return `<div class="why"><b>Por que está aqui</b><ul>${reasons(r).map(s=>`<li>${s}</li>`).join('')}</ul><b>Se não podar</b>${riskHTML(r)}<b>Quem precisa agir</b><p>${chip(r.act)} ${ACTDESC[r.act]}</p><span class="muted">Pontos da nota — ${parts}. Posição na cidade: ${r.g}º de ${fmt(D.length)}; na zona (${zn(r.zona)}): ${r.zr}º de ${fmt(r.zn)}.</span><a href="https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lon}" target="_blank" rel="noopener">Ver o local no Google Maps</a></div>`;}
+
+function render(){const F=filtered();const S=F.slice(0,shown);
+  const tb=document.getElementById('tb');
+  tb.innerHTML=S.map((r,i)=>{const bar=r.pts.map((p,j)=>`<i style="width:${p.toFixed(2)}%;background:var(${COMP[j].cor})"></i>`).join('');
+    const row=`<tr class="row${openCep===r.cep?' open':''}" data-cep="${r.cep}" tabindex="0"><td class="pos">${i+1}</td><td class="num">${r.cepf}</td><td class="who"><b>${esc(r.rua)}</b><span>${esc(r.bairro)}</span></td><td><div class="sc"><b>${Math.round(r.score)}</b><div><div class="bar" title="${COMP.map((c,j)=>c.nome+': '+r.pts[j].toFixed(1)).join(' | ')}">${bar}</div>${fo.value==='zona'?`<small>${r.zr}º de ${fmt(r.zn)} na zona</small>`:''}</div></div></td><td class="n">${r.com||'–'}</td><td class="n">${r.light||'–'}</td><td class="n">${r.risco||'–'}</td><td><span class="tn" style="margin:0">${ten(r.pq).replace(' cada','')}</span></td><td>${chip(r.act)}</td></tr>`;
+    return row+(openCep===r.cep?`<tr class="det"><td colspan="9">${why(r)}</td></tr>`:'');}).join('')||'<tr><td colspan="9" class="muted">Nenhum CEP com esses filtros.</td></tr>';
+  document.getElementById('count').textContent=`Mostrando ${fmt(S.length)} de ${fmt(F.length)} CEPs`;
+  document.getElementById('more').hidden=S.length>=F.length;
+  const top=S.slice(0,400).slice().reverse();
+  document.getElementById('hot').innerHTML=top.map(r=>`<circle cx="${px(r.lon)}" cy="${py(r.lat)}" r="${(2+r.score/14).toFixed(1)}" fill="var(${ACOL[r.act]})" fill-opacity=".8" stroke="var(--surface)" stroke-width=".8"><title>${r.g}º · ${esc(r.rua)}, ${esc(r.bairro)} · nota ${Math.round(r.score)} · ${ACT[r.act][0]}</title></circle>`).join('');}
+
+function toggle(cep){openCep=openCep===cep?null:cep;render();}
+document.getElementById('tb').addEventListener('click',e=>{const tr=e.target.closest('tr.row');if(tr&&!e.target.closest('a'))toggle(tr.dataset.cep);});
+document.getElementById('tb').addEventListener('keydown',e=>{const tr=e.target.closest('tr.row');if(tr&&(e.key==='Enter'||e.key===' ')){e.preventDefault();toggle(tr.dataset.cep);}});
+
+// ---- risk map
+const CK=(x,y)=>x*1000+y, cellInfo=new Map();
+JSON.parse(document.getElementById('cells').textContent).forEach(c=>cellInfo.set(CK(c[0],c[1]),{gx:c[0],gy:c[1],queda:c[2],bairro:c[3]}));
+D.forEach(r=>{const gx=Math.floor((r.lon+43.8)*102.5),gy=Math.floor((r.lat+23.1)*110.6),k=CK(gx,gy);
+  if(!cellInfo.has(k))cellInfo.set(k,{gx,gy,queda:0,bairro:r.bairro});r.ck=k;});
+const CELLS=[...cellInfo.entries()].map(([k,c])=>(c.k=k,c));
+const LAY={
+ queda:{nome:'Quedas no verão',unid:'quedas',val:c=>c.queda,fmt:v=>fmt(v),
+   desc:'Árvores caídas registradas de dezembro a abril, somando as quatro temporadas de chuva de 2022–23 a 2025–26. É onde os temporais derrubam árvores. Teste: usando só o histórico até novembro de 2025, os 10% de quadrados com mais quedas concentraram 32% das quedas do verão 2025–26, e os 20% com mais quedas, 51%.'},
+ risco:{nome:'Risco recente',unid:'chamados',val:c=>c.risco,fmt:v=>fmt(v),
+   desc:'Chamados de avaliação de risco, remoção e árvore caída nos últimos 12 meses, somando todos os CEPs do quadrado.'},
+ light:{nome:'Conflito com a rede',unid:'pedidos',val:c=>c.light,fmt:v=>fmt(v),
+   desc:'Pedidos de poda travados na Light (status Pendente). Indica onde há árvores encostando na fiação e onde uma janela de desligamento rende mais.'},
+ prior:{nome:'Prioridade de poda',unid:'nota',val:c=>c.maxs,fmt:v=>Math.round(v),
+   desc:'Maior nota de CEP dentro de cada quadrado, com os pesos atuais. Resume para onde a lista manda as equipes; muda quando você mexe nos pesos.'}
+};
+let layer='queda';
+const CW=MW/(X1-X0)/102.5, CH=MH/(Y1-Y0)/110.6;
+const rmap=document.getElementById('rmap');rmap.setAttribute('viewBox',`0 0 ${MW} ${MH}`);
+rmap.innerHTML=CELLS.map(c=>`<rect id="c${c.k}" x="${px(-43.8+c.gx/102.5)}" y="${py(-23.1+(c.gy+1)/110.6)}" width="${CW.toFixed(2)}" height="${CH.toFixed(2)}" stroke="var(--surface)" stroke-width=".6"><title></title></rect>`).join('');
+const seg=document.getElementById('rseg');
+seg.innerHTML=Object.keys(LAY).map(k=>`<button data-l="${k}" aria-pressed="${k===layer}">${LAY[k].nome}</button>`).join('');
+seg.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;layer=b.dataset.l;seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.l===layer));drawRisk();});
+function aggCells(){CELLS.forEach(c=>{c.maxs=0;c.risco=0;c.light=0;c.ncep=0;c.top=null;});
+  D.forEach(r=>{const c=cellInfo.get(r.ck);c.ncep++;c.risco+=r.risco;c.light+=r.light;if(r.score>c.maxs){c.maxs=r.score;c.top=r;}});}
+function q(a,p){return a[Math.min(a.length-1,Math.floor(p*a.length))];}
+function drawRisk(){const L=LAY[layer];const pos=CELLS.map(L.val).filter(v=>v>0).sort((a,b)=>a-b);
+  let br=[.4,.65,.85,.95].map(p=>q(pos,p));
+  br=br.map((b,i)=>Math.max(b,(i?br[i-1]:0)));
+  const cls=v=>v<=0?0:1+br.filter(b=>v>b).length;
+  CELLS.forEach(c=>{const v=L.val(c),k=cls(v),el=document.getElementById('c'+c.k);
+    el.setAttribute('fill',k?`var(--r${k})`:'var(--map-bg)');el.setAttribute('fill-opacity',k?1:.55);
+    el.firstChild.textContent=`${c.bairro} · ${L.nome}: ${L.fmt(v)} ${L.unid}\nQuedas no verão (4 temporadas): ${c.queda} · Risco 12m: ${c.risco} · Travados na Light: ${c.light}`+(c.top?`\nMaior nota: ${Math.round(c.maxs)} (${c.top.rua}, CEP ${c.top.cepf})`:'');});
+  document.getElementById('rdesc').textContent=L.desc;
+  const lo=pos.length?pos[0]:0, hi=pos.length?pos[pos.length-1]:0;
+  const edges=[lo,...br,hi], f=L.fmt;
+  document.getElementById('rleg').innerHTML=`<span class="lab" style="margin-left:0">${L.nome} (${L.unid}):</span>`+[1,2,3,4,5].map(i=>{
+    const a=i===1?edges[0]:edges[i-1], b=edges[i];const lab=layer==='prior'?(i===1?`até ${f(b)}`:`${f(a)}–${f(b)}`):(i===1?`${f(a)}–${f(b)}`:`${f(Math.floor(a)+1)}–${f(b)}`);
+    return `<span class="sw2" style="background:var(--r${i})"></span><span class="lab">${lab}</span>`;}).join('')+`<span class="sw2" style="background:var(--map-bg);opacity:.55"></span><span class="lab">zero</span>`;
+  const top=CELLS.filter(c=>L.val(c)>0).sort((a,b)=>L.val(b)-L.val(a)).slice(0,10);
+  document.getElementById('rtitle').textContent=`Quadrados com mais ${L.nome.toLowerCase()}`;
+  document.getElementById('rtop').innerHTML=top.map((c,i)=>`<li data-k="${c.k}"><span class="k">${i+1}</span><span class="b">${esc(c.bairro)}${c.top?`<small>${layer==='prior'?esc(c.top.rua):`maior nota: ${esc(c.top.rua)} (${Math.round(c.maxs)})`}</small>`:''}</span><span class="v">${L.fmt(L.val(c))}</span></li>`).join('');}
+const rtop=document.getElementById('rtop');
+rtop.addEventListener('mouseover',e=>{const li=e.target.closest('li');rmap.querySelectorAll('.hl').forEach(x=>x.classList.remove('hl'));if(li){const el=document.getElementById('c'+li.dataset.k);el.classList.add('hl');el.parentNode.appendChild(el);}});
+rtop.addEventListener('mouseleave',()=>rmap.querySelectorAll('.hl').forEach(x=>x.classList.remove('hl')));
+
+
+// ---- robustness chart
+(function(){const ROB=[["2024-01-01", 62.4, 61.4, 63.2], ["2024-04-01", 62.4, 61.4, 63.0], ["2024-07-01", 64.8, 62.4, 65.3], ["2024-10-01", 61.5, 60.8, 62.3], ["2025-01-01", 57.9, 56.1, 59.2], ["2025-04-01", 58.9, 57.2, 60.2], ["2025-07-01", 56.9, 55.0, 58.3], ["2025-09-15", 60.9, 58.8, 62.3]];const svg=document.getElementById('robchart');
+ const W=760,H=300,x0=70,x1=590,y0=24,y1=250,lo=54,hi=66;
+ const X=i=>x0+i*(x1-x0)/(ROB.length-1), Yv=v=>y1-(v-lo)/(hi-lo)*(y1-y0);
+ const MES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+ const lab=d=>MES[+d.slice(5,7)-1]+'/'+d.slice(2,4);
+ const S=[{k:3,n:'Melhor do período',c:'var(--muted)',dash:'5 4',w:1.5},{k:2,n:'Pesos anteriores',c:'var(--c-esp)',w:2},{k:1,n:'Pesos atuais',c:'var(--accent)',w:3}];
+ let g='';
+ for(let v=lo;v<=hi;v+=4){g+=`<line x1="${x0}" x2="${x1}" y1="${Yv(v)}" y2="${Yv(v)}" stroke="var(--line)"/><text x="${x0-10}" y="${Yv(v)+4}" text-anchor="end" font-size="12" fill="var(--muted)">${v}%</text>`;}
+ ROB.forEach((r,i)=>{g+=`<text x="${X(i)}" y="${y1+22}" text-anchor="middle" font-size="12" fill="var(--muted)">${lab(r[0])}</text>`;});
+ g+=`<text x="${x0}" y="14" font-size="12" fill="var(--muted)">acerto médio</text>`;
+ S.forEach(s=>{const pts=ROB.map((r,i)=>`${X(i)},${Yv(r[s.k])}`).join(' ');
+  g+=`<polyline points="${pts}" fill="none" stroke="${s.c}" stroke-width="${s.w}" ${s.dash?`stroke-dasharray="${s.dash}"`:''}/>`;
+  g+=ROB.map((r,i)=>`<circle cx="${X(i)}" cy="${Yv(r[s.k])}" r="${s.k===1?4:3}" fill="${s.c}"><title>${lab(r[0])} · ${s.n}: ${r[s.k].toFixed(1).replace('.',',')}%</title></circle>`).join('');
+  const last=ROB[ROB.length-1];g+=`<text x="${x1+10}" y="${Yv(last[s.k])+4+(s.k===3?-6:s.k===2?6:0)}" font-size="12" font-weight="${s.k===1?700:400}" fill="${s.c}">${s.n}</text>`;});
+ svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.innerHTML=g;})();
+
+function update(){score();aggCells();drawRisk();const tot=W.reduce((a,b)=>a+b,0);
+  document.getElementById('wsum').textContent=`Pesos somam ${tot}. A nota é reescalada para 0–100.`;
+  document.getElementById('wnote').hidden=W.every((w,i)=>w===DEF[i]);
+  facts();cards();render();}
+update();
+})();
+</script>

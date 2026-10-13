@@ -67,6 +67,11 @@ Testado e descartado (não melhorou o acerto): vizinhança de 150–300 m, queda
 | `index.html` | o site, autocontido (dados embutidos) |
 | `dados/ranking_ceps_poda.csv` | ranking completo com os pesos sugeridos: nota, posição na zona, pontos de cada sinal, contagens e coordenadas do CEP |
 | `dados/quedas_verao_quadrados_1km.csv` | quedas de árvore de dezembro a abril (2022–2026) por quadrado de ~1 km |
+| `codigo/` | todo o código da análise: limpeza dos chamados, modelos de aprendizado de máquina, validação e montagem desta página. Comece por [`codigo/README.md`](codigo/README.md) |
+
+## Código
+
+A pasta [`codigo/`](codigo/) tem as 70 etapas da análise, numeradas na ordem em que rodam (A01 a J18), cada uma com um cabeçalho que explica o que faz, o que lê e o que grava. Com os CSVs dos chamados em `codigo/dados_entrada/`, `python codigo/rodar_tudo.py` refaz tudo, inclusive este site, em cerca de 12 minutos. O [`codigo/README.md`](codigo/README.md) explica como rodar, os filtros e definições usados nos dados e os modelos.
 
 ## Limites
 

@@ -1,0 +1,6 @@
+trabalho/
+saidas/
+logs/
+__pycache__/
+dados_entrada/chamados_completo_com_cep_parte*.csv
+dados_entrada/dados_finais_setor_v3_subtipos1a9.csv
