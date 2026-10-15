@@ -116,7 +116,7 @@ td.who span{display:block;color:var(--muted);font-size:13px}
 .bar{display:flex;height:10px;width:130px;background:var(--soft);border-radius:2px;overflow:hidden}
 .bar i{display:block;height:100%}
 .sc{display:flex;align-items:center;gap:8px}
-.sc b{font-family:var(--f-disp);font-weight:800;font-size:17px;width:28px;text-align:right}
+.sc b{font-family:var(--f-disp);font-weight:800;font-size:17px;width:34px;flex:none;text-align:right}
 td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
 td.z{color:var(--muted)}
 tr.det td{padding:4px 10px 14px 50px;border-bottom:1px solid var(--line);background:var(--soft)}
@@ -184,6 +184,20 @@ details.apx[open]>summary::after{content:"−"}
 details.apx>summary small{display:block;font-family:var(--f-body);font-weight:400;font-size:14px;color:var(--muted)}
 .apx-in{display:flex;flex-direction:column;gap:40px;padding:6px 0 24px}
 .min0{min-width:0}
+/* v6: ver por CEP ou por área de 150 m */
+.vis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:10px}
+.vis button{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px 13px;font-weight:400;font-size:14px;color:var(--muted);line-height:1.4}
+.vis button b{font-family:var(--f-disp);font-size:17px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:9px}
+.vis button b::before{content:"";flex:none;width:16px;height:16px;border-radius:50%;border:2px solid var(--muted);box-sizing:border-box}
+.vis button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.vis button[aria-pressed="true"] b::before{border:5px solid var(--accent)}
+.visnote{font-size:15px;max-width:76ch}
+.visnote a{color:var(--accent)}
+.mem{font-size:14px;line-height:1.6}
+.mem small{color:var(--muted);font-family:var(--f-mono);font-size:12px}
+.nw{white-space:nowrap}
+.abt tr.grp td{font-weight:700;background:var(--soft)}
+.abt td:first-child{white-space:normal}
 </style>
 
 <div class="wrap">
@@ -197,9 +211,14 @@ details.apx>summary small{display:block;font-family:var(--f-body);font-weight:40
 
 <section id="top">
   <div>
-    <h2>Os 10 lugares mais urgentes</h2>
-    <p class="muted">Cada lugar é um CEP. A nota vai de 0 a 100 e soma os sinais de problema registrados no 1746: pedidos de poda esperando, pedidos que dependem da Light e chamados de risco ou de árvore caída. Escolha uma zona para ver os 10 mais urgentes dela.</p>
+    <h2 id="toph">Os 10 lugares mais urgentes</h2>
+    <p class="muted">A nota de cada CEP vai de 0 a 100 e soma os sinais de problema registrados no 1746: pedidos de poda esperando, pedidos que dependem da Light e chamados de risco ou de árvore caída. Escolha como quer ver os lugares e, se quiser, uma zona.</p>
   </div>
+  <div class="vis" id="vis" role="group" aria-label="Como ver os lugares">
+    <button data-v="cep" aria-pressed="true"><b>Por CEP</b>Cada lugar é um CEP. Melhor quando o limite é quantos CEPs a equipe consegue podar.</button>
+    <button data-v="area" aria-pressed="false"><b>Por área de 150 m</b>CEPs vizinhos viram um só destino, e a prioridade é a soma das notas deles. Melhor quando o limite é quantas idas da equipe ou desligamentos da Light dá para programar.</button>
+  </div>
+  <p class="visnote" id="visnote"></p>
   <div class="seg" id="tz" role="group" aria-label="Zona"></div>
   <div class="pgrid" id="cards"></div>
   <div class="solo2" id="solo"></div>
@@ -231,9 +250,10 @@ details.apx>summary small{display:block;font-family:var(--f-body);font-weight:40
 <section id="agir">
   <h2>Como usar esta lista</h2>
   <ol class="steps">
-    <li>Escolha a zona da equipe e comece pelos lugares de nota mais alta.</li>
+    <li>Escolha a visão. <b>Por CEP</b> quando a equipe vai a endereços específicos; <b>por área de 150 m</b> quando vai programar idas ou desligamentos da Light que cubram vários CEPs vizinhos de uma vez.</li>
+    <li>Escolha a zona da equipe e comece pelos lugares de nota (ou prioridade) mais alta.</li>
     <li>Onde aparece <span class="chip a-com">COMLURB pode ir já</span>, nenhum pedido depende da fiação: mande a equipe.</li>
-    <li>Onde aparece <span class="chip a-mix">COMLURB + Light</span>, a COMLURB poda o que não encosta na fiação e envia o restante à Light para programar o desligamento. Juntar lugares próximos no mesmo desligamento evita cortes de energia repetidos.</li>
+    <li>Onde aparece <span class="chip a-mix">COMLURB + Light</span>, a COMLURB poda o que não encosta na fiação e envia o restante à Light para programar o desligamento. Juntar lugares próximos no mesmo desligamento evita cortes de energia repetidos; a visão por área de 150 m já sugere esses grupos.</li>
     <li>Onde aparece <span class="chip a-light">Precisa da Light</span>, todos os pedidos envolvem a fiação: leve a lista direto à Light.</li>
     <li>Onde aparece <span class="chip a-vist">Vistoria de risco</span>, há chamados de risco ou de árvore caída, mas nenhuma poda pedida: mande um técnico avaliar.</li>
     <li>Faça isso antes de dezembro, quando começa o período com mais quedas.</li>
@@ -257,18 +277,19 @@ details.apx>summary small{display:block;font-family:var(--f-body);font-weight:40
 <section>
   <div>
     <h2>Todos os lugares</h2>
-    <p class="muted">Todos os CEPs com algum pedido de árvore. Use os filtros para ver só a sua zona ou um tipo de ação, e clique numa linha para ver o motivo e o risco. Em “Ordenar por”, a opção “Posição dentro de cada zona” alterna as zonas, para que as regiões que registram menos pedidos não fiquem escondidas. No mapa, os pontos coloridos são os lugares mostrados na lista, com a cor de quem precisa agir.</p>
+    <p class="muted">Todos os CEPs com algum pedido de árvore, um por linha ou agrupados em áreas de 150 m (escolha em “Ver por”). Use os filtros para ver só a sua zona ou um tipo de ação, e clique numa linha para ver o motivo e o risco. Em “Ordenar por”, a opção “Posição dentro de cada zona” alterna as zonas, para que as regiões que registram menos pedidos não fiquem escondidas. No mapa, os pontos coloridos são os lugares mostrados na lista, com a cor de quem precisa agir.</p>
   </div>
   <div class="filters">
+    <label for="fv">Ver por<select id="fv"><option value="cep">CEP</option><option value="area">Área de 150 m</option></select></label>
     <label for="fz">Zona<select id="fz"></select></label>
     <label for="fa">Quem precisa agir<select id="fa"></select></label>
-    <label for="fo">Ordenar por<select id="fo"><option value="cidade">Nota na cidade</option><option value="zona">Posição dentro de cada zona</option></select></label>
+    <label for="fo">Ordenar por<select id="fo"><option value="cidade">Mais urgentes da cidade</option><option value="zona">Posição dentro de cada zona</option></select></label>
     <label for="fq">Buscar rua, bairro ou CEP<input type="search" id="fq" placeholder="ex.: Grajaú, 20561"></label>
   </div>
   <div class="mapbox"><svg id="map" role="img" aria-label="Mapa do Rio com os CEPs prioritários"></svg></div>
   <div class="tbl">
     <table>
-      <thead><tr><th>#</th><th>CEP</th><th>Lugar</th><th>Nota</th><th class="r">Esperando a COMLURB</th><th class="r">Esperando a Light</th><th class="r">Risco ou queda (12 meses)</th><th>Chance de árvore caída</th><th>Quem precisa agir</th></tr></thead>
+      <thead id="th"></thead>
       <tbody id="tb"></tbody>
     </table>
   </div>
@@ -280,6 +301,7 @@ details.apx>summary small{display:block;font-family:var(--f-body);font-weight:40
   <ul class="lim">
     <li><b>“Esperando a Light” é uma aproximação.</b> São pedidos com status Pendente no 1746, que a COMLURB não pode executar por envolver a fiação. Não temos os dados da Light sobre a rede nem sobre os desligamentos.</li>
     <li><b>Algumas regiões registram menos.</b> Na Zona Oeste, poucos pedidos ficam como Pendentes e muitos são fechados como “informações incorretas”, então ela aparece menos no topo da cidade. Para comparar dentro de cada região, escolha a zona no topo da página ou use “Posição dentro de cada zona” na lista.</li>
+    <li><b>Área de 150 m não é o traçado da rede.</b> CEPs próximos podem estar em circuitos diferentes da Light. A área sugere o que juntar numa ida ou num desligamento; quem confirma se um desligamento cobre a área toda é a Light.</li>
     <li><b>A lista não evita todas as quedas.</b> A maior parte das árvores caídas acontece em lugares sem pedidos antes. Podar pela lista reduz os problemas com a fiação, mas não substitui as equipes de prontidão em dias de temporal (veja o mapa de risco).</li>
   </ul>
 </section>
@@ -331,13 +353,33 @@ details.apx>summary small{display:block;font-family:var(--f-body);font-weight:40
   <p>Em todos os 8 períodos, os pesos atuais acertaram mais que os anteriores e ficaram entre os 7% melhores de 3.000 combinações sorteadas. A melhor combinação nos 8 períodos juntos seria risco 25, poda aberta 10, Light 50, previsão 10 e espera 5. Ela acerta em média 0,5 ponto a mais, todo o ganho em prever pedidos novos travados na Light. Mantivemos os pesos atuais porque eles dão mais peso a quem já está esperando poda da COMLURB, algo que essa medida de acerto não conta. Os melhores pesos mudam com o tempo, então vale refazer este teste a cada atualização dos dados.</p>
 </section>
 
+<section class="apx-s" id="areas-como">
+  <div>
+    <h2>Como as áreas de 150 m são formadas</h2>
+    <p class="muted">A visão por área junta CEPs vizinhos num só destino, para planejar idas da equipe e desligamentos da Light. É o mesmo método usado no projeto para propor frentes de desligamento.</p>
+  </div>
+  <ol class="steps">
+    <li>Cada CEP é um ponto no mapa: o centro dos chamados registrados nele.</li>
+    <li>Para cada CEP, somamos as notas de todos os CEPs a até 150 m dele.</li>
+    <li>O CEP com a maior soma vira o centro da primeira área, e todos os CEPs a até 150 m dele entram nela.</li>
+    <li>Esses CEPs saem da disputa. Repetimos os passos 2 e 3 com os que sobraram, até todo CEP estar em uma área.</li>
+  </ol>
+  <p id="astat"></p>
+  <div>
+    <h3>Por área ou por CEP: qual antecipa mais problemas?</h3>
+    <p class="muted">Formamos as áreas e calculamos as notas só com o que se sabia em 1º de janeiro e em 1º de julho de 2025, e contamos o que aconteceu nos 12 meses seguintes. Média dos dois testes.</p>
+  </div>
+  <div class="tbl"><table class="vt abt" id="abtt"></table></div>
+  <p>Com o mesmo número de destinos, as áreas ganham, porque cada uma junta vários CEPs. Com o mesmo número de CEPs podados, a lista por CEP ganha, porque escolhe um a um os CEPs mais urgentes, enquanto a área leva junto vizinhos de nota mais baixa. Por isso a escolha depende do que limita o trabalho: o número de idas e de desligamentos (veja por área) ou o número de CEPs que dá para podar (veja por CEP).</p>
+</section>
+
 <section class="apx-s">
   <div>
     <h2>O que testamos e não entrou</h2>
     <p class="muted">Cada ideia foi testada do mesmo jeito: nota refeita com dados de 2024, conferida nos testes de 2025. Nenhuma destas melhorou o acerto o suficiente para justificar a complexidade.</p>
   </div>
   <ul class="lim">
-    <li><b>Vizinhança:</b> pedidos travados na Light num raio de 150 m e quedas num raio de 300 m do CEP. Repetem o que o próprio CEP já mostra.</li>
+    <li><b>Vizinhança dentro da nota do CEP:</b> pedidos travados na Light num raio de 150 m e quedas num raio de 300 m do CEP. Repetem o que o próprio CEP já mostra. (Isso é diferente da visão por área, que agrupa CEPs vizinhos depois de calculada a nota de cada um.)</li>
     <li><b>Quedas em verões anteriores no quadrado de 1 km.</b> Úteis para prontidão em dias de temporal (veja o mapa de risco), mas não para escolher onde podar.</li>
     <li><b>Cobertura de árvores do setor censitário.</b> Sozinha acerta pouco mais que um sorteio; combinada, não muda o topo.</li>
     <li><b>Contar endereços em vez de chamados</b>, para não contar várias vezes a mesma árvore. Resultado praticamente igual.</li>
@@ -365,6 +407,7 @@ details.apx>summary small{display:block;font-family:var(--f-body);font-weight:40
 
 <script type="application/json" id="data">__DATA__</script>
 <script type="application/json" id="cells">__CELLS__</script>
+<script type="application/json" id="abt">__AREABT__</script>
 <script>
 (function(){
 const RAW=JSON.parse(document.getElementById('data').textContent);
@@ -382,7 +425,7 @@ const COMP=[
 const DEF=COMP.map(c=>c.peso);
 D.forEach(r=>{r.v=COMP.map(c=>c.f(r));
   r.act=r.light>0&&r.com>0?'mix':r.light>0?'light':r.com>0?'com':'vist';
-  r.cepf=r.cep.slice(0,5)+'-'+r.cep.slice(5);
+  r.cepf=r.cep.slice(0,5)+'-'+r.cep.slice(5);r.k='c'+r.cep;
   r.s=(r.cep+' '+r.cepf+' '+r.rua+' '+r.bairro+' '+r.ra).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();});
 const ACT={mix:['COMLURB + Light','a-mix'],com:['COMLURB pode ir já','a-com'],light:['Precisa da Light','a-light'],vist:['Vistoria de risco','a-vist']};
 const ACTDESC={mix:'A COMLURB poda o que não encosta na fiação; o restante precisa de desligamento programado com a Light.',com:'Nenhum pedido envolve a fiação: a COMLURB pode resolver sozinha.',light:'Todos os pedidos envolvem a fiação: só avança com desligamento programado pela Light.',vist:'Há chamados de risco ou de árvore caída, mas nenhuma poda pedida: um técnico deve avaliar.'};
@@ -393,8 +436,20 @@ const ZONES=['Centro','Sul','Tijuca/Grande Tijuca','Norte','Oeste','Oeste (Barra
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const fmt=n=>n.toLocaleString('pt-BR');
 const chip=a=>`<span class="chip ${ACT[a][1]}">${ACT[a][0]}</span>`;
-let W=DEF.slice(), sorted=[], sortedZ=[], shown=100, tzSel='';
+let W=DEF.slice(), sorted=[], sortedZ=[], sortedA=[], sortedAZ=[], shown=100, tzSel='', vis='cep';
+const pl=n=>n>1?'s':'', nCEP=n=>`${n} CEP${pl(n)}`;
 D.forEach(r=>{r.s0=r.v.reduce((a,v,i)=>a+v*DEF[i],0)/DEF.reduce((a,b)=>a+b,0)*100;r.pq=sig(CAL.q[0]+CAL.q[1]*r.s0/100);r.pl=sig(CAL.l[0]+CAL.l[1]*r.s0/100);});
+// ---- áreas de 150 m (grupos de CEPs vizinhos, formados na etapa J18)
+const AM=new Map();D.forEach((r,i)=>{if(r.area==null)r.area=-1-i;if(!AM.has(r.area))AM.set(r.area,[]);AM.get(r.area).push(r);});
+const A=[...AM.entries()].map(([id,m])=>{const a={id,m,n:m.length,k:'a'+id};const sum=f=>m.reduce((s,r)=>s+f(r),0);
+  ['com','light','risco','queda'].forEach(c=>a[c]=sum(r=>r[c]));
+  a.lmax=Math.max(...m.map(r=>r.lmax));a.esp=Math.max(...m.map(r=>r.esp));a.prob=Math.max(...m.map(r=>r.prob));
+  a.pq=sum(r=>r.pq);a.pl=sum(r=>r.pl);a.lat=sum(r=>r.lat)/a.n;a.lon=sum(r=>r.lon)/a.n;
+  a.act=a.light>0&&a.com>0?'mix':a.light>0?'light':a.com>0?'com':'vist';
+  const bc={};m.forEach(r=>bc[r.bairro]=(bc[r.bairro]||0)+1);a.bairros=Object.keys(bc).sort((x,y)=>bc[y]-bc[x]);
+  a.s=m.map(r=>r.s).join(' ');return a;});
+const bairrosTxt=a=>a.bairros.slice(0,2).join(' e ')+(a.bairros.length>2?` e mais ${a.bairros.length-2}`:'');
+const ABT=JSON.parse(document.getElementById('abt').textContent);
 function dur(d){if(d<60)return `${d} dias`;const m=Math.round(d/30.44);if(m<12)return `${m} meses`;const y=Math.floor(m/12),mm=m%12;return `${y} ano${y>1?'s':''}`+(mm?` e ${mm} ${mm>1?'meses':'mês'}`:'');}
 const ten=p=>{const k=Math.round(p*10);return k<1?'menos de 1 em cada 10':`${k} em cada 10`;};
 const dots=(p,cls)=>{const k=Math.round(p*10);return `<span class="dots ${cls}" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i class="${i<k?'on':''}"></i>`).join('')}</span>`;};
@@ -405,14 +460,35 @@ function reasons(r){const it=[];const pl=n=>n>1?'s':'';
   if(r.prob>=0.3)it.push([r.pts[3],`pelo histórico das quadras, ${Math.round(r.prob*100)}% de chance de surgir outro pedido envolvendo a fiação em 12 meses`]);
   return it.sort((a,b)=>b[0]-a[0]).map(x=>x[1]);}
 const riskHTML=r=>`<p>Em lugares com nota parecida, <b>${ten(r.pq)}</b> tiveram árvore caída e <b>${ten(r.pl)}</b> tiveram nova árvore encostando na fiação no ano seguinte.</p><div class="drow"><span>Árvore caída</span>${dots(r.pq,'q-col')}<span>Árvore na fiação</span>${dots(r.pl,'l-col')}</div>`;
+// textos de uma área
+function areaReasons(a){if(a.n===1)return reasons(a.top);const it=[];
+  const cnt=c=>a.m.filter(r=>r[c]>0).length;
+  const em=k=>k===a.n?(a.n===2?', nos 2 CEPs':`, em todos os ${a.n} CEPs`):`, em ${k} dos ${a.n} CEPs`;
+  if(a.light)it.push([a.pts[2],`${a.light} pedido${pl(a.light)} de poda ${a.light>1?'dependem':'depende'} da Light por envolver a fiação${em(cnt('light'))}; o mais antigo espera há ${dur(a.lmax)}`]);
+  if(a.com)it.push([a.pts[1]+a.pts[4],`${a.com} pedido${pl(a.com)} de poda ${a.com>1?'esperam':'espera'} a COMLURB${em(cnt('com'))}; o mais antigo, há ${dur(a.esp)}`]);
+  if(a.risco)it.push([a.pts[0],`${a.risco} chamado${pl(a.risco)} de risco, remoção ou árvore caída no último ano${em(cnt('risco'))}`+(a.queda?` (${a.queda} árvore${pl(a.queda)} caída${pl(a.queda)})`:'')]);
+  if(a.prob>=0.3)it.push([a.pts[3],`pelo histórico das quadras, até ${Math.round(a.prob*100)}% de chance de surgir outro pedido envolvendo a fiação em 12 meses`]);
+  return it.sort((x,y)=>y[0]-x[0]).map(x=>x[1]);}
+const ex=v=>v<0.5?'menos de 1':`cerca de ${Math.round(v)}`;
+const dotsN=(v,n,cls)=>{const k=Math.round(v);return `<span class="dots ${cls}" aria-hidden="true">${Array.from({length:n},(_,i)=>`<i class="${i<k?'on':''}"></i>`).join('')}</span>`;};
+const areaRisk=a=>a.n===1?riskHTML(a.top):`<p>Pelo que aconteceu em CEPs com notas parecidas, espera-se árvore caída em <b>${ex(a.pq)} dos ${a.n} CEPs</b> desta área e nova árvore encostando na fiação em <b>${ex(a.pl)}</b> deles nos próximos 12 meses.</p><div class="drow"><span>Árvore caída</span>${dotsN(a.pq,a.n,'q-col')}<span>Árvore na fiação</span>${dotsN(a.pl,a.n,'l-col')}</div><span class="muted" style="font-size:13px">Cada bolinha é um CEP da área.</span>`;
+function areaAct(a){if(a.n===1)return ACTDESC[a.act];const L=a.light;
+  return {mix:`A COMLURB pode podar numa mesma ida o que não encosta na fiação nos ${a.n} CEPs; ${L>1?`os ${L} pedidos que envolvem a fiação podem`:'o pedido que envolve a fiação pode'} entrar num mesmo desligamento programado com a Light.`,
+    light:`Todos os pedidos envolvem a fiação: um mesmo desligamento programado pela Light pode cobrir ${L>1?`os ${L} pedidos`:'o pedido'} da área.`,
+    com:`Nenhum pedido envolve a fiação: uma equipe da COMLURB pode atender os ${a.n} CEPs numa mesma ida.`,
+    vist:`Há chamados de risco ou de árvore caída, mas nenhuma poda pedida: um técnico pode vistoriar os ${a.n} CEPs numa mesma ida.`}[a.act];}
+const gmaps=(lat,lon,t)=>`<a class="maplink" href="https://www.google.com/maps/search/?api=1&query=${(+lat).toFixed(6)},${(+lon).toFixed(6)}" target="_blank" rel="noopener">${t}</a>`;
 const BANDS=[["0–19", 5045, 8, 9, 34], ["20–39", 2686, 14, 23, 54], ["40–59", 1055, 22, 41, 71], ["60–79", 312, 28, 59, 87], ["80–100", 44, 47, 71, 98]];
 
 function score(){const tot=W.reduce((a,b)=>a+b,0)||1;
   D.forEach(r=>{let s=0;r.pts=r.v.map((v,i)=>{const p=v*W[i]/tot*100;s+=p;return p;});r.score=s;});
-  sorted=D.slice().sort((a,b)=>b.score-a.score);sorted.forEach((r,i)=>r.g=i+1);
-  const zc={};sorted.forEach(r=>{zc[r.zona]=(zc[r.zona]||0)+1;r.zr=zc[r.zona];});
-  sorted.forEach(r=>{r.zn=zc[r.zona];r.zp=r.zr/r.zn;});
-  sortedZ=sorted.slice().sort((a,b)=>a.zp-b.zp||b.score-a.score);}
+  sorted=D.slice().sort((a,b)=>b.score-a.score);sorted.forEach((r,i)=>r.g=i+1);sortedZ=zrank(sorted);
+  A.forEach(a=>{a.m.sort((x,y)=>y.score-x.score);const t=a.m[0];a.top=t;a.rua=t.rua;a.zona=t.zona;a.cepf=t.cepf;
+    a.score=a.m.reduce((s,r)=>s+r.score,0);a.pts=COMP.map((c,j)=>a.m.reduce((s,r)=>s+r.pts[j],0));});
+  sortedA=A.slice().sort((x,y)=>y.score-x.score);sortedA.forEach((a,i)=>a.g=i+1);sortedAZ=zrank(sortedA);}
+// posição dentro de cada zona (serve para CEPs e para áreas)
+function zrank(list){const zc={};list.forEach(x=>{zc[x.zona]=(zc[x.zona]||0)+1;x.zr=zc[x.zona];});
+  list.forEach(x=>{x.zn=zc[x.zona];x.zp=x.zr/x.zn;});return list.slice().sort((a,b)=>a.zp-b.zp||b.score-a.score);}
 
 // weights UI
 const wbox=document.getElementById('weights');
@@ -429,11 +505,16 @@ const fz=document.getElementById('fz'),fa=document.getElementById('fa'),fq=docum
 fz.innerHTML='<option value="">Todas</option>'+ZONES.map(z=>`<option>${esc(z)}</option>`).join('');
 fa.innerHTML='<option value="">Todos</option>'+Object.keys(ACT).map(a=>`<option value="${a}">${ACT[a][0]}</option>`).join('');
 [fz,fa,fo].forEach(el=>el.addEventListener('change',()=>{shown=100;render();}));
+const visEl=document.getElementById('vis'),fv=document.getElementById('fv');
+function setVis(v){vis=v;visEl.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));fv.value=v;openKey=null;shown=100;cards();render();}
+visEl.addEventListener('click',e=>{const b=e.target.closest('button');if(b&&b.dataset.v!==vis)setVis(b.dataset.v);});
+fv.addEventListener('change',()=>setVis(fv.value));
 fq.addEventListener('input',()=>{shown=100;render();});
 document.getElementById('more').onclick=()=>{shown+=100;render();};
 
 function filtered(){const z=fz.value,a=fa.value,q=fq.value.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();
-  return (fo.value==='zona'?sortedZ:sorted).filter(r=>(!z||r.zona===z)&&(!a||r.act===a)&&(!q||r.s.includes(q)));}
+  const base=vis==='area'?(fo.value==='zona'?sortedAZ:sortedA):(fo.value==='zona'?sortedZ:sorted);
+  return base.filter(r=>(!z||r.zona===z)&&(!a||r.act===a)&&(!q||r.s.includes(q)));}
 
 function facts(){const t=sorted.slice(0,100);const sum=f=>t.reduce((a,r)=>a+f(r),0);
   const com=sum(r=>r.com),li=sum(r=>r.light);
@@ -449,14 +530,33 @@ function facts(){const t=sorted.slice(0,100);const sum=f=>t.reduce((a,r)=>a+f(r)
 const tz=document.getElementById('tz');
 tz.innerHTML=[['','Cidade inteira'],...ZONES.map(z=>[z,ZN[z]])].map(([v,l])=>`<button data-z="${esc(v)}" aria-pressed="${v===tzSel}">${l}</button>`).join('');
 tz.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tzSel=b.dataset.z;tz.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.z===tzSel));cards();});
-function cards(){const list=tzSel?sorted.filter(r=>r.zona===tzSel):sorted;
-  document.getElementById('cards').innerHTML=list.slice(0,10).map((r,i)=>`<article class="pcard"><div class="ph"><span class="rk">${i+1}</span><div class="min0"><h3>${esc(r.rua)}</h3><span class="sub">${esc(r.bairro)} · ${zn(r.zona)} · CEP ${r.cepf}</span></div><div class="nota"><b>${Math.round(r.score)}</b><small>nota</small></div></div>`+
+function cepCard(r,i){return `<article class="pcard"><div class="ph"><span class="rk">${i+1}</span><div class="min0"><h3>${esc(r.rua)}</h3><span class="sub">${esc(r.bairro)} · ${zn(r.zona)} · CEP ${r.cepf}</span></div><div class="nota"><b>${Math.round(r.score)}</b><small>nota</small></div></div>`+
    `<div class="pc"><h4>Por que está aqui</h4><ul>${reasons(r).map(s=>`<li>${s}</li>`).join('')}</ul></div>`+
    `<div class="pc risk"><h4>Se não podar</h4>${riskHTML(r)}</div>`+
    `<div class="pc"><h4>Quem precisa agir</h4><p>${chip(r.act)}</p><p>${ACTDESC[r.act]}</p></div>`+
-   `<a class="maplink" href="https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lon}" target="_blank" rel="noopener">Ver o local no Google Maps</a></article>`).join('');
-  const solo=list.filter(r=>r.act==='com').slice(0,3);
-  document.getElementById('solo').innerHTML=solo.length?`<b>Onde a COMLURB pode ir já, sem depender da Light${tzSel?' ('+ZN[tzSel]+')':''}:</b> `+solo.map(r=>`${esc(r.rua)} (${esc(r.bairro)}, nota ${Math.round(r.score)})`).join('; ')+'.':'';}
+   gmaps(r.lat,r.lon,'Ver o local no Google Maps')+`</article>`;}
+function areaCard(a,i){
+  const sub=`${esc(bairrosTxt(a))} · ${zn(a.zona)} · `+(a.n>1?`${a.n} CEPs a até 150 m do centro`:`CEP ${a.cepf}, único CEP da área`);
+  return `<article class="pcard"><div class="ph"><span class="rk">${i+1}</span><div class="min0"><h3>${esc(a.rua)}${a.n>1?' e arredores':''}</h3><span class="sub">${sub}</span></div><div class="nota"><b>${Math.round(a.score)}</b><small>prioridade</small></div></div>`+
+   `<div class="pc"><h4>Por que está aqui</h4><ul>${areaReasons(a).map(s=>`<li>${s}</li>`).join('')}</ul></div>`+
+   (a.n>1?`<div class="pc"><h4>Os ${a.n} CEPs da área e suas notas</h4><p class="mem">${a.m.map(r=>`${esc(r.rua)} <span class="nw"><small>${r.cepf}</small> <b>${Math.round(r.score)}</b></span>`).join(' · ')}</p></div>`:'')+
+   `<div class="pc risk"><h4>Se não podar</h4>${areaRisk(a)}</div>`+
+   `<div class="pc"><h4>Quem precisa agir</h4><p>${chip(a.act)}</p><p>${areaAct(a)}</p></div>`+
+   gmaps(a.lat,a.lon,a.n>1?'Ver o centro da área no Google Maps':'Ver o local no Google Maps')+`</article>`;}
+const vezes=(x,y)=>(x/y).toFixed(1).replace('.',',')+' vezes';
+const pctMais=(x,y)=>`${Math.round((x/y-1)*10)*10}%`;
+function cards(){const isA=vis==='area',base=isA?sortedA:sorted,list=tzSel?base.filter(x=>x.zona===tzSel):base;
+  document.getElementById('toph').textContent=isA?'As 10 áreas mais urgentes':'Os 10 lugares mais urgentes';
+  document.getElementById('cards').innerHTML=list.slice(0,10).map((x,i)=>isA?areaCard(x,i):cepCard(x,i)).join('');
+  const solo=list.filter(x=>x.act==='com').slice(0,3),zt=tzSel?' ('+ZN[tzSel]+')':'';
+  document.getElementById('solo').innerHTML=!solo.length?'':isA?
+    `<b>Áreas onde a COMLURB pode ir já, sem depender da Light${zt}:</b> `+solo.map(a=>`${esc(a.rua)}${a.n>1?' e arredores':''} (${esc(a.bairros[0])}, ${nCEP(a.n)}, prioridade ${Math.round(a.score)})`).join('; ')+'.':
+    `<b>Onde a COMLURB pode ir já, sem depender da Light${zt}:</b> `+solo.map(r=>`${esc(r.rua)} (${esc(r.bairro)}, nota ${Math.round(r.score)})`).join('; ')+'.';
+  const b=ABT,el=document.getElementById('visnote');
+  if(!isA){el.innerHTML=`Nos testes de 2025, os cerca de ${Math.round(b.mesmo.ceps/10)*10} CEPs do topo da lista por CEP tiveram, no ano seguinte, cerca de ${pctMais(b.mesmo.cep_q,b.mesmo.area_q)} mais árvores caídas e ${pctMais(b.mesmo.cep_l,b.mesmo.area_l)} mais pedidos novos na fiação do que o mesmo número de CEPs escolhido por área. Para cada CEP podado, a lista por CEP acerta mais. <a href="#areas-como">Ver a comparação</a>.`;return;}
+  const t=list.slice(0,10),sum=f=>t.reduce((s,a)=>s+f(a),0),com=sum(a=>a.com),li=sum(a=>a.light);
+  const c10=(tzSel?sorted.filter(r=>r.zona===tzSel):sorted).slice(0,10),cc=c10.reduce((s,r)=>s+r.com+r.light,0);
+  el.innerHTML=`A prioridade da área é a soma das notas dos seus CEPs: uma área com vários CEPs urgentes sobe na lista. As 10 áreas abaixo reúnem <b>${sum(a=>a.n)} CEPs</b> e <b>${fmt(com+li)} pedidos de poda esperando</b> (${fmt(com)} com a COMLURB e ${fmt(li)} com a Light); os 10 CEPs mais urgentes${tzSel?' da zona':''} somam ${fmt(cc)}. Nos testes de 2025, as 100 áreas do topo tiveram, no ano seguinte, ${vezes(b.d100.area_q,b.d100.cep_q)} mais árvores caídas que os 100 CEPs do topo, mas reuniam ${vezes(b.d100.area_ceps,b.d100.n)} mais CEPs. <a href="#areas-como">Como as áreas são formadas</a>.`;}
 
 // map
 const X0=-43.80,X1=-43.09,Y0=-23.085,Y1=-22.74,MW=760,MH=Math.round(MW*(Y1-Y0)/((X1-X0)*Math.cos(22.9*Math.PI/180)));
@@ -465,24 +565,49 @@ const map=document.getElementById('map');map.setAttribute('viewBox',`0 0 ${MW} $
 map.innerHTML=`<g fill="var(--map-bg)">${D.map(r=>`<circle cx="${px(r.lon)}" cy="${py(r.lat)}" r="1.3"/>`).join('')}</g><g id="hot"></g>`;
 const ACOL={mix:'--a-mix',com:'--a-com',light:'--a-light',vist:'--a-vist'};
 
-let openCep=null;
+let openKey=null;
 function why(r){
   const parts=COMP.map((c,i)=>`${c.nome}: ${r.pts[i].toFixed(1).replace('.',',')}`).join(' · ');
-  return `<div class="why"><b>Por que está aqui</b><ul>${reasons(r).map(s=>`<li>${s}</li>`).join('')}</ul><b>Se não podar</b>${riskHTML(r)}<b>Quem precisa agir</b><p>${chip(r.act)} ${ACTDESC[r.act]}</p><span class="muted">Pontos da nota — ${parts}. Posição na cidade: ${r.g}º de ${fmt(D.length)}; na zona (${zn(r.zona)}): ${r.zr}º de ${fmt(r.zn)}.</span><a href="https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lon}" target="_blank" rel="noopener">Ver o local no Google Maps</a></div>`;}
+  return `<div class="why"><b>Por que está aqui</b><ul>${reasons(r).map(s=>`<li>${s}</li>`).join('')}</ul><b>Se não podar</b>${riskHTML(r)}<b>Quem precisa agir</b><p>${chip(r.act)} ${ACTDESC[r.act]}</p><span class="muted">Pontos da nota — ${parts}. Posição na cidade: ${r.g}º de ${fmt(D.length)}; na zona (${zn(r.zona)}): ${r.zr}º de ${fmt(r.zn)}.${(m=>m.length>1?` Na visão por área, fica junto com mais ${nCEP(m.length-1)} vizinho${pl(m.length-1)} (área de ${esc(m[0].rua)}).`:'')(AM.get(r.area))}</span>${gmaps(r.lat,r.lon,'Ver o local no Google Maps')}</div>`;}
+function whyA(a){
+  const mem=a.m.map(r=>`<li><b>${esc(r.rua)}</b> · CEP ${r.cepf} · ${esc(r.bairro)}: nota ${Math.round(r.score)}`+[r.com?`${r.com} na COMLURB`:'',r.light?`${r.light} na Light`:'',r.risco?`${r.risco} de risco ou queda`:''].filter(Boolean).map(t=>' · '+t).join('')+'</li>').join('');
+  return `<div class="why"><b>Por que está aqui</b><ul>${areaReasons(a).map(s=>`<li>${s}</li>`).join('')}</ul><b>${a.n>1?`Os ${a.n} CEPs da área`:'O CEP da área'}</b><ul>${mem}</ul><b>Se não podar</b>${areaRisk(a)}<b>Quem precisa agir</b><p>${chip(a.act)} ${areaAct(a)}</p><span class="muted">Prioridade = soma das notas dos CEPs da área. Posição na cidade: ${a.g}ª de ${fmt(A.length)} áreas; na zona (${zn(a.zona)}): ${a.zr}ª de ${fmt(a.zn)}.</span>${gmaps(a.lat,a.lon,a.n>1?'Ver o centro da área no Google Maps':'Ver o local no Google Maps')}</div>`;}
+const TH={cep:['#','CEP','Lugar','Nota','r:Esperando a COMLURB','r:Esperando a Light','r:Risco ou queda (12 meses)','Chance de árvore caída','Quem precisa agir'],
+  area:['#','CEP central','Área','Prioridade','r:Esperando a COMLURB','r:Esperando a Light','r:Risco ou queda (12 meses)','Árvore caída esperada','Quem precisa agir']};
 
-function render(){const F=filtered();const S=F.slice(0,shown);
-  const tb=document.getElementById('tb');
-  tb.innerHTML=S.map((r,i)=>{const bar=r.pts.map((p,j)=>`<i style="width:${p.toFixed(2)}%;background:var(${COMP[j].cor})"></i>`).join('');
-    const row=`<tr class="row${openCep===r.cep?' open':''}" data-cep="${r.cep}" tabindex="0"><td class="pos">${i+1}</td><td class="num">${r.cepf}</td><td class="who"><b>${esc(r.rua)}</b><span>${esc(r.bairro)}</span></td><td><div class="sc"><b>${Math.round(r.score)}</b><div><div class="bar" title="${COMP.map((c,j)=>c.nome+': '+r.pts[j].toFixed(1)).join(' | ')}">${bar}</div>${fo.value==='zona'?`<small>${r.zr}º de ${fmt(r.zn)} na zona</small>`:''}</div></div></td><td class="n">${r.com||'–'}</td><td class="n">${r.light||'–'}</td><td class="n">${r.risco||'–'}</td><td><span class="tn" style="margin:0">${ten(r.pq).replace(' cada','')}</span></td><td>${chip(r.act)}</td></tr>`;
-    return row+(openCep===r.cep?`<tr class="det"><td colspan="9">${why(r)}</td></tr>`:'');}).join('')||'<tr><td colspan="9" class="muted">Nenhum CEP com esses filtros.</td></tr>';
-  document.getElementById('count').textContent=`Mostrando ${fmt(S.length)} de ${fmt(F.length)} CEPs`;
+function render(){const isA=vis==='area',F=filtered(),S=F.slice(0,shown),o=isA?'ª':'º',zs=fo.value==='zona';
+  document.getElementById('th').innerHTML='<tr>'+TH[vis].map(h=>h.startsWith('r:')?`<th class="r">${h.slice(2)}</th>`:`<th>${h}</th>`).join('')+'</tr>';
+  const mx=isA?(sortedA.length?sortedA[0].score:1):100;
+  document.getElementById('tb').innerHTML=S.map((x,i)=>{const bar=x.pts.map((p,j)=>`<i style="width:${(p/mx*100).toFixed(2)}%;background:var(${COMP[j].cor})"></i>`).join('');
+    const open=openKey===x.k;
+    const lugar=isA?`<b>${esc(x.rua)}${x.n>1?' e arredores':''}</b><span>${esc(bairrosTxt(x))} · ${nCEP(x.n)}</span>`:`<b>${esc(x.rua)}</b><span>${esc(x.bairro)}</span>`;
+    const chance=isA&&x.n>1?`${ex(x.pq)} de ${x.n} CEPs`:ten(x.pq).replace(' cada','');
+    const row=`<tr class="row${open?' open':''}" data-k="${x.k}" tabindex="0"><td class="pos">${i+1}</td><td class="num">${x.cepf}</td><td class="who">${lugar}</td><td><div class="sc"><b>${Math.round(x.score)}</b><div><div class="bar" title="${COMP.map((c,j)=>c.nome+': '+x.pts[j].toFixed(1)).join(' | ')}">${bar}</div>${zs?`<small>${x.zr}${o} de ${fmt(x.zn)} na zona</small>`:''}</div></div></td><td class="n">${x.com||'–'}</td><td class="n">${x.light||'–'}</td><td class="n">${x.risco||'–'}</td><td><span class="tn" style="margin:0">${chance}</span></td><td>${chip(x.act)}</td></tr>`;
+    return row+(open?`<tr class="det"><td colspan="9">${isA?whyA(x):why(x)}</td></tr>`:'');}).join('')||`<tr><td colspan="9" class="muted">${isA?'Nenhuma área':'Nenhum CEP'} com esses filtros.</td></tr>`;
+  document.getElementById('count').textContent=`Mostrando ${fmt(S.length)} de ${fmt(F.length)} ${isA?'áreas':'CEPs'}`+(isA?` (${fmt(F.reduce((s,a)=>s+a.n,0))} CEPs)`:'');
   document.getElementById('more').hidden=S.length>=F.length;
   const top=S.slice(0,400).slice().reverse();
-  document.getElementById('hot').innerHTML=top.map(r=>`<circle cx="${px(r.lon)}" cy="${py(r.lat)}" r="${(2+r.score/14).toFixed(1)}" fill="var(${ACOL[r.act]})" fill-opacity=".8" stroke="var(--surface)" stroke-width=".8"><title>${r.g}º · ${esc(r.rua)}, ${esc(r.bairro)} · nota ${Math.round(r.score)} · ${ACT[r.act][0]}</title></circle>`).join('');}
+  document.getElementById('hot').innerHTML=top.map(x=>`<circle cx="${px(x.lon)}" cy="${py(x.lat)}" r="${(isA?1.5+Math.sqrt(x.score)*.38:2+x.score/14).toFixed(1)}" fill="var(${ACOL[x.act]})" fill-opacity=".8" stroke="var(--surface)" stroke-width=".8"><title>${x.g}${o} · ${esc(x.rua)}${isA&&x.n>1?' e arredores':''}, ${esc(isA?x.bairros[0]:x.bairro)} · ${isA?nCEP(x.n)+' · prioridade':'nota'} ${Math.round(x.score)} · ${ACT[x.act][0]}</title></circle>`).join('');}
 
-function toggle(cep){openCep=openCep===cep?null:cep;render();}
-document.getElementById('tb').addEventListener('click',e=>{const tr=e.target.closest('tr.row');if(tr&&!e.target.closest('a'))toggle(tr.dataset.cep);});
-document.getElementById('tb').addEventListener('keydown',e=>{const tr=e.target.closest('tr.row');if(tr&&(e.key==='Enter'||e.key===' ')){e.preventDefault();toggle(tr.dataset.cep);}});
+function toggle(k){openKey=openKey===k?null:k;render();}
+document.getElementById('tb').addEventListener('click',e=>{const tr=e.target.closest('tr.row');if(tr&&!e.target.closest('a'))toggle(tr.dataset.k);});
+document.getElementById('tb').addEventListener('keydown',e=>{const tr=e.target.closest('tr.row');if(tr&&(e.key==='Enter'||e.key===' ')){e.preventDefault();toggle(tr.dataset.k);}});
+// links internos que apontam para dentro do apêndice: abre o apêndice antes de rolar
+document.addEventListener('click',e=>{const l=e.target.closest('a[href^="#"]');if(!l)return;const t=document.getElementById(l.getAttribute('href').slice(1));if(!t)return;
+  e.preventDefault();const d=t.closest('details');if(d)d.open=true;t.scrollIntoView({behavior:'smooth',block:'start'});});
+// apêndice: números das áreas e comparação por área × por CEP
+(function(){const n1=A.filter(a=>a.n===1).length,mx=Math.max(...A.map(a=>a.n));
+  document.getElementById('astat').textContent=`Hoje são ${fmt(A.length)} áreas para ${fmt(D.length)} CEPs: ${fmt(n1)} têm um só CEP (em geral, lugares sem outros CEPs com pedidos por perto) e ${fmt(A.length-n1)} juntam de 2 a ${mx} CEPs. A prioridade da área é a soma das notas dos seus CEPs. As áreas foram desenhadas com os pesos sugeridos: se você mexer nos pesos, a prioridade de cada área muda, mas os CEPs de cada área continuam os mesmos.`;
+  const b=ABT,bw=(x,y)=>x>y?`<b>${fmt(x)}</b>`:fmt(x),d=b.d100,m=b.mesmo;
+  document.getElementById('abtt').innerHTML=`<thead><tr><th></th><th class="r">Lista por CEP</th><th class="r">Lista por área</th></tr></thead><tbody>`+
+   `<tr class="grp"><td colspan="3">Mesmo número de destinos (idas ou desligamentos): ${d.n}</td></tr>`+
+   `<tr><td>CEPs visitados</td><td class="n">${fmt(d.n)}</td><td class="n">${fmt(d.area_ceps)}</td></tr>`+
+   `<tr><td>Árvores caídas nesses CEPs no ano seguinte</td><td class="n">${bw(d.cep_q,d.area_q)}</td><td class="n">${bw(d.area_q,d.cep_q)}</td></tr>`+
+   `<tr><td>Novos pedidos travados na Light no ano seguinte</td><td class="n">${bw(d.cep_l,d.area_l)}</td><td class="n">${bw(d.area_l,d.cep_l)}</td></tr>`+
+   `<tr class="grp"><td colspan="3">Mesmo número de CEPs: cerca de ${Math.round(m.ceps/10)*10}</td></tr>`+
+   `<tr><td>Destinos (idas ou desligamentos)</td><td class="n">${fmt(m.ceps)}</td><td class="n">${fmt(m.areas)}</td></tr>`+
+   `<tr><td>Árvores caídas nesses CEPs no ano seguinte</td><td class="n">${bw(m.cep_q,m.area_q)}</td><td class="n">${bw(m.area_q,m.cep_q)}</td></tr>`+
+   `<tr><td>Novos pedidos travados na Light no ano seguinte</td><td class="n">${bw(m.cep_l,m.area_l)}</td><td class="n">${bw(m.area_l,m.cep_l)}</td></tr></tbody>`;})();
 
 // ---- risk map
 const CK=(x,y)=>x*1000+y, cellInfo=new Map();

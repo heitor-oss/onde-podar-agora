@@ -8,10 +8,10 @@ Análise exploratória do projeto de extensão *Ciência de Dados para Cidades I
 
 | | |
 |---|---|
-| **[Site: Onde podar agora](https://heitor-oss.github.io/onde-podar-agora/)** | Os lugares prioritários, o motivo de cada um, o risco de não podar, mapa de risco e a lista completa de 9.848 CEPs. Feito para gestores. |
-| **[Código da análise](codigo/)** | As 70 etapas em Python que vão dos CSVs do 1746 até o site: limpeza, modelos, validação. Comece pelo **[guia do código](codigo/README.md)**. |
+| **[Site: Onde podar agora](https://heitor-oss.github.io/onde-podar-agora/)** | Os lugares prioritários, o motivo de cada um, o risco de não podar, mapa de risco e a lista completa de 9.848 CEPs, vistos um a um ou agrupados em áreas de 150 m. Feito para gestores. |
+| **[Código da análise](codigo/)** | As 71 etapas em Python que vão dos CSVs do 1746 até o site: limpeza, modelos, validação. Comece pelo **[guia do código](codigo/README.md)**. |
 | **[Documento: aprendizado de máquina no projeto](docs/aprendizado_de_maquina.md)** | Explicação didática dos três modelos usados, de como foram testados e do quanto dá para confiar neles. |
-| **[Dados](dados/)** | O ranking completo por CEP e as quedas de árvore no verão por quadrado de 1 km, em CSV. |
+| **[Dados](dados/)** | O ranking completo por CEP, o ranking por área de 150 m e as quedas de árvore no verão por quadrado de 1 km, em CSV. |
 
 ## O código
 
@@ -38,12 +38,13 @@ Em 12 a 25 minutos, o site e as planilhas aparecem em `codigo/saidas/`. O **[gui
 
 ## O que a página mostra
 
-- **Os 10 lugares mais urgentes** (na cidade ou em cada zona), cada um com: por que está na lista, o que pode acontecer se não for podado e quem precisa agir (COMLURB, Light ou vistoria).
+- **Duas formas de ver os lugares:** **por CEP** (cada lugar é um CEP) ou **por área de 150 m** (CEPs vizinhos viram um só destino, com prioridade igual à soma das notas). A escolha vale para os 10 mais urgentes e para a lista completa.
+- **Os 10 lugares (ou áreas) mais urgentes** (na cidade ou em cada zona), cada um com: por que está na lista, o que pode acontecer se não for podado e quem precisa agir (COMLURB, Light ou vistoria).
 - **O que pode acontecer se não podar:** árvore caída, árvore na fiação e fila crescendo, com números do 1746; quantos lugares de cada faixa de nota tiveram esses problemas no ano seguinte; e a comparação entre lugares atendidos e não atendidos a tempo.
 - **Como usar a lista:** passos para a equipe.
 - **Mapa de risco:** a cidade em quadrados de cerca de 1 km, com quatro camadas (quedas no verão, risco recente, conflito com a rede e prioridade de poda).
-- **Todos os lugares:** 9.848 CEPs, com filtros por zona, tipo de ação e busca, ordenados pela nota da cidade ou pela posição dentro de cada zona.
-- **Apêndice para quem quer entender a nota:** pesos ajustáveis, validação, teste dos pesos em 8 períodos, ideias descartadas e todos os limites.
+- **Todos os lugares:** 9.848 CEPs (ou 5.384 áreas), com filtros por zona, tipo de ação e busca, ordenados pela urgência na cidade ou pela posição dentro de cada zona.
+- **Apêndice para quem quer entender a nota:** pesos ajustáveis, validação, teste dos pesos em 8 períodos, como as áreas de 150 m são formadas, ideias descartadas e todos os limites.
 
 ## Como a nota é feita
 
@@ -86,6 +87,25 @@ Os pesos foram conferidos em 8 datas de corte (jan/2024 a set/2025, modelo de pr
 
 "Se não podar" por lugar: chance estimada por uma curva logística da nota (pesos sugeridos) ajustada às 8 datas de corte; mostrada como "x em cada 10 lugares com nota parecida". Comparação atendido × não atendido (cortes jul/2024 a abr/2025, CEPs com 2+ pedidos abertos): onde a maior parte foi atendida em até 3 meses, houve menos árvores caídas nos 9 meses seguintes em todas as faixas de nota (nota 60+: 22% contra 27%). É um indício, não uma prova.
 
+## Por CEP ou por área de 150 m?
+
+As áreas juntam CEPs vizinhos com o mesmo método das frentes de desligamento: o CEP cujo entorno de 150 m soma mais nota vira o centro de uma área, os CEPs desse entorno entram nela, saem da disputa, e o processo se repete. Hoje são 5.384 áreas: 3.223 com um só CEP e 2.161 com 2 a 9 CEPs. A prioridade da área é a soma das notas dos seus CEPs.
+
+Teste com as áreas e notas refeitas em jan/2025 e jul/2025 (média dos dois), contando o que aconteceu nos 12 meses seguintes:
+
+| | Lista por CEP | Lista por área |
+|---|---|---|
+| **Mesmo número de destinos: 100** | | |
+| CEPs visitados | 100 | 480 |
+| Árvores caídas no ano seguinte | 76 | **172** |
+| Novos pedidos travados na Light | 166 | **320** |
+| **Mesmo número de CEPs: cerca de 500** | | |
+| Destinos | 496 | 104 |
+| Árvores caídas no ano seguinte | **268** | 178 |
+| Novos pedidos travados na Light | **569** | 332 |
+
+Com o mesmo número de destinos, as áreas pegam mais problemas, porque cada uma junta vários CEPs. Com o mesmo número de CEPs podados, a lista por CEP pega mais, porque não leva junto vizinhos de nota baixa. Use a área quando o limite é o número de idas da equipe ou de desligamentos da Light; use o CEP quando o limite é quantos CEPs dá para podar.
+
 No mapa de risco, usando o histórico até nov/2025, os 10% de quadrados com mais quedas concentraram 32% das quedas do verão 2025–26.
 
 Testado e descartado (não melhorou o acerto): vizinhança de 150–300 m, quedas em verões anteriores no quadrado de 1 km, cobertura de árvores do setor, contagem por endereço, pedidos fechados como "não há previsão", os 3.901 pedidos fechados em massa em out/2025 e um modelo de aprendizado de máquina no lugar da soma com pesos.
@@ -95,7 +115,8 @@ Testado e descartado (não melhorou o acerto): vizinhança de 150–300 m, queda
 | Arquivo | Conteúdo |
 |---|---|
 | `index.html` | o site, autocontido (dados embutidos) |
-| `dados/ranking_ceps_poda.csv` | ranking completo com os pesos sugeridos: nota, posição na zona, pontos de cada sinal, contagens e coordenadas do CEP |
+| `dados/ranking_ceps_poda.csv` | ranking completo com os pesos sugeridos: nota, posição na zona, pontos de cada sinal, contagens, coordenadas e área de 150 m do CEP |
+| `dados/ranking_areas_150m.csv` | ranking das áreas de 150 m: prioridade (soma das notas), maior nota, ação sugerida, contagens somadas, CEPs da área e centro |
 | `dados/quedas_verao_quadrados_1km.csv` | quedas de árvore de dezembro a abril (2022–2026) por quadrado de ~1 km |
 | `codigo/` | todo o código da análise; veja [o guia](codigo/README.md) |
 | `docs/aprendizado_de_maquina.md` | documento didático sobre os modelos |
@@ -107,6 +128,7 @@ Testado e descartado (não melhorou o acerto): vizinhança de 150–300 m, queda
 - Os 500 CEPs de maior nota concentraram só 13% a 17% das árvores caídas do ano seguinte: o ranking não substitui a prontidão em dias de temporal.
 - O status de cada pedido é o da data de extração; alguns pedidos antigos podem já ter sido resolvidos sem baixa no sistema. Em 13 e 14/10/2025, cerca de 4 mil pedidos antigos foram fechados em massa.
 - O CEP vem da localização do chamado cruzada com a base de CEPs.
+- A área de 150 m não é o traçado da rede: CEPs próximos podem estar em circuitos diferentes da Light, que é quem confirma se um desligamento cobre a área toda.
 
 ## Fonte
 

@@ -77,7 +77,8 @@ ORDEM = [
     "J15_atendido_vs_nao_atendido",
     "J16_mapa_de_risco",
     "J17_numeros_da_pagina",
-    "J18_montar_pagina"
+    "J18_areas_150m",
+    "J19_montar_pagina"
 ]
 
 def main(args):

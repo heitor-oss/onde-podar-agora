@@ -10,7 +10,7 @@ Este guia foi escrito para os colegas do projeto. Não é preciso saber tudo de 
 
 ## A ideia em uma frase
 
-O código é uma **sequência de 70 etapas**, cada uma num arquivo Python. Elas rodam em ordem: cada etapa lê o que as anteriores gravaram, faz uma coisa e grava o resultado para as próximas. O nome do arquivo diz o grupo e a ordem: `H03_modelo1_treino_avaliacao.py` é a 3ª etapa do grupo H.
+O código é uma **sequência de 71 etapas**, cada uma num arquivo Python. Elas rodam em ordem: cada etapa lê o que as anteriores gravaram, faz uma coisa e grava o resultado para as próximas. O nome do arquivo diz o grupo e a ordem: `H03_modelo1_treino_avaliacao.py` é a 3ª etapa do grupo H.
 
 | Grupo | O que responde | Etapas mais importantes |
 |---|---|---|
@@ -23,7 +23,7 @@ O código é uma **sequência de 70 etapas**, cada uma num arquivo Python. Elas 
 | **G** | A cobertura de árvores ajuda? Quem liga menos para o 1746? | G02, G03 |
 | **H** | Árvores na fiação: dá para prever onde vai surgir o próximo pedido? | H01, H02, H03, H05 |
 | **I** | Dá para ter menos desligamentos de energia agrupando a poda? | I03, I06 |
-| **J** | Onde podar primeiro, e por quê? (o site) | J02, J03, J09, J12, J14, J18 |
+| **J** | Onde podar primeiro, e por quê? (o site) | J02, J03, J09, J12, J14, J18, J19 |
 
 A lista completa, com o que cada etapa lê e grava, está em **[ETAPAS.md](ETAPAS.md)**.
 
@@ -84,7 +84,8 @@ Aparece uma linha por etapa com o tempo que levou. Tudo leva de 12 a 25 minutos.
 
 **7. Veja os resultados:**
 - `saidas/site/index.html` — o site, que abre em qualquer navegador;
-- `saidas/ranking_ceps_poda.csv` — o ranking completo, para abrir no Excel ou no Google Planilhas;
+- `saidas/ranking_ceps_poda.csv` — o ranking completo por CEP, para abrir no Excel ou no Google Planilhas;
+- `saidas/ranking_areas_150m.csv` — o mesmo ranking agrupado em áreas de 150 m (CEPs vizinhos);
 - `logs/` — o que cada etapa imprimiu: tabelas, métricas dos modelos, conferências.
 
 Para rodar só uma parte, depois de ter rodado tudo uma vez:
@@ -191,7 +192,8 @@ df.head()
 | `gb.pkl` | o modelo 1 treinado | H03 |
 | `cepg.pkl`, `cep_rank.pkl` | sinais e nota por CEP hoje | J02, J03 |
 | `pri_feats.pkl`, `pri_roll.pkl` | sinais por CEP em datas passadas e o que aconteceu depois (para validar) | J07, J11 |
-| `rank_data.json`, `cell_quedas.json` | os dados que entram no site | J04, J16 |
+| `rank_data.json`, `cell_quedas.json` | os dados que entram no site (o `rank_data.json` ganha a área de 150 m de cada CEP em J18) | J04, J16, J18 |
+| `area_bt.json` | teste de 2025: olhar por área de 150 m ou por CEP | J18 |
 
 ---
 
@@ -211,7 +213,7 @@ df.head()
 
 **De onde veio o clima?** Da API histórica do Open-Meteo, consultada para vários pontos da cidade e resumida por dia (média e máximo entre os pontos). A lista exata de pontos não ficou registrada.
 
-**E as outras páginas do projeto?** As páginas "Picos de chamados por CEP", "Árvores e rede elétrica" e o "Painel do piloto" usam os resultados destas etapas, mas o código que as montou não foi guardado em arquivo. Só o site "Onde podar agora" é montado aqui (J18).
+**E as outras páginas do projeto?** As páginas "Picos de chamados por CEP", "Árvores e rede elétrica" e o "Painel do piloto" usam os resultados destas etapas, mas o código que as montou não foi guardado em arquivo. Só o site "Onde podar agora" é montado aqui (J19).
 
 ---
 

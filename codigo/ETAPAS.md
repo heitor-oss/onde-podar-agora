@@ -655,11 +655,20 @@ Tabela de validação, faixas de nota e gráfico de robustez.
 - **Grava:** bands8.json, pri_page.json, rob_rows.json
 - **Usado em:** Página.
 
-### [J18 · Montar a página e o site](etapas/J18_montar_pagina.py)
+### [J18 · Áreas de 150 m (grupos de CEPs)](etapas/J18_areas_150m.py)
 *principal*
 
-Insere o ranking e o mapa no modelo HTML e gera a versão do artefato e o index.html do GitHub Pages.
+Junta CEPs vizinhos em áreas de até 150 m de raio, com o mesmo algoritmo guloso das frentes de desligamento (I03): o CEP cujo entorno de 150 m soma mais nota vira o centro de uma área, os CEPs desse entorno entram nela e saem da lista, e o processo se repete. A prioridade da área é a soma das notas dos seus CEPs. Também refaz as áreas com os dados de 1º/01 e 1º/07/2025 e compara, no ano seguinte, as áreas do topo com os CEPs do topo (mesmo número de destinos e mesmo número de CEPs).
 
-- **Lê:** cell_quedas.json
-- **Grava:** nada (só imprime)
+- **Lê:** rank_data.json, pri_feats.pkl
+- **Grava:** rank_data.json (com a coluna area), area_bt.json, ranking_areas_150m.csv e a coluna area_150m em ranking_ceps_poda.csv (saidas)
+- **Usado em:** Página: escolha "por CEP" ou "por área de 150 m".
+
+### [J19 · Montar a página e o site](etapas/J19_montar_pagina.py)
+*principal*
+
+Insere o ranking (com as áreas), o mapa e a comparação por área × por CEP no modelo HTML e gera a versão do artefato e o index.html do GitHub Pages, com as planilhas em site/dados.
+
+- **Lê:** rank_data.json, cell_quedas.json, area_bt.json, pagina/onde_podar_agora_modelo.html
+- **Grava:** onde_podar_agora_artefato.html, site/index.html, site/dados/*.csv (saidas)
 - **Usado em:** Página e site.
