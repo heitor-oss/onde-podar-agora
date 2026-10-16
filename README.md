@@ -4,7 +4,7 @@ Onde a poda de árvores é mais urgente no Rio, por que, e o que pode acontecer 
 
 Análise exploratória do projeto de extensão *Ciência de Dados para Cidades Inteligentes* (UFRJ). Não é um dado oficial da Prefeitura, da COMLURB nem da Light.
 
-**Equipe:** Heitor Morais ([@heitor-oss](https://github.com/heitor-oss)) e José Salgado ([@jssppedra-png](https://github.com/jssppedra-png)).
+**Colaboradores:** [Heitor Morais](https://github.com/heitor-oss) e [José Salgado](https://github.com/jssppedra-png).
 
 ## O que tem neste repositório
 
@@ -123,7 +123,7 @@ Testado e descartado (não melhorou o acerto): vizinhança de 150–300 m, queda
 |---|---|
 | `index.html` | página Onde podar agora, autocontida (dados embutidos) |
 | `painel-1746.html` | página Painel 1746, autocontida (dados embutidos) |
-| `barra.js` | a barra do topo do site: abas entre as páginas e equipe |
+| `barra.js` | a barra do topo do site: abas entre as páginas e colaboradores |
 | `dados/ranking_ceps_poda.csv` | ranking completo com os pesos sugeridos: nota, posição na zona, pontos de cada sinal, contagens, coordenadas e área de 150 m do CEP |
 | `dados/ranking_areas_150m.csv` | ranking das áreas de 150 m: prioridade (soma das notas), maior nota, ação sugerida, contagens somadas, CEPs da área e centro |
 | `dados/quedas_verao_quadrados_1km.csv` | quedas de árvore de dezembro a abril (2022–2026) por quadrado de ~1 km |
