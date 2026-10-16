@@ -1,4 +1,4 @@
-// Barra do topo do site (GitHub Pages): abas para trocar de página e quem fez o projeto.
+// Barra do topo do site (GitHub Pages): abas para trocar de página e os colaboradores do projeto.
 // Cada página do site põe <site-barra atual="id-da-pagina"></site-barra> logo depois de <body>
 // e carrega este arquivo (barra.js). Para incluir uma página nova, acrescente-a em PAGINAS.
 // Os atributos opcionais largura e margem alinham a barra com o conteúdo da página
@@ -28,9 +28,8 @@
     .eq{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;color:var(--m);padding:8px 0}
     .eq a{color:var(--t);text-decoration:underline;text-decoration-color:var(--l);text-underline-offset:3px}
     .eq a:hover{text-decoration-color:var(--a)}
-    .eq small{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:11px;color:var(--m)}
     a:focus-visible{outline:2px solid var(--a);outline-offset:2px;border-radius:3px}
-    @media (max-width:640px){.eq{padding:0 0 10px}.eq small{display:none}}
+    @media (max-width:640px){.eq{padding:0 0 10px}}
   `;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   class SiteBarra extends HTMLElement {
@@ -39,10 +38,11 @@
       const atual = this.getAttribute('atual');
       const px = (nome, padrao) => (+this.getAttribute(nome) || padrao) + 'px';
       const abas = PAGINAS.map(p => `<a href="${esc(p.href)}"${p.id === atual ? ' aria-current="page"' : ''}>${esc(p.titulo)}</a>`).join('');
-      const equipe = EQUIPE.map(e => `<a href="https://github.com/${esc(e.github)}" target="_blank" rel="noopener" title="github.com/${esc(e.github)}">${esc(e.nome)}</a> <small>@${esc(e.github)}</small>`).join('<span aria-hidden="true">·</span>');
+      const nomes = EQUIPE.map(e => `<a href="https://github.com/${esc(e.github)}" target="_blank" rel="noopener">${esc(e.nome)}</a>`);
+      const equipe = nomes.slice(0, -1).join(', ') + (nomes.length > 1 ? ' e ' : '') + nomes[nomes.length - 1];
       this.attachShadow({ mode: 'open' }).innerHTML =
         `<style>:host{--w:${px('largura', 1080)};--p:${px('margem', 20)}}${CSS}</style><nav aria-label="Páginas do projeto"><div class="in"><div class="tabs">${abas}</div>` +
-        `<div class="eq"><span>Feito por</span>${equipe}</div></div></nav>`;
+        `<div class="eq"><span>Colaboradores: ${equipe}</span></div></div></nav>`;
     }
   }
   if (!customElements.get('site-barra')) customElements.define('site-barra', SiteBarra);
