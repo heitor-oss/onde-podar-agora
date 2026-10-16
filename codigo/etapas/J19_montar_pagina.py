@@ -9,7 +9,7 @@ O que faz:
 Lê:
     rank_data.json, cell_quedas.json, area_bt.json, pagina/onde_podar_agora_modelo.html
 Grava:
-    saidas/onde_podar_agora_artefato.html, saidas/site/index.html, saidas/site/barra.js e saidas/site/dados/*.csv
+    saidas/onde_podar_agora_artefato.html, saidas/site/index.html, saidas/site/barra.js (barra do topo e rodapé) e saidas/site/dados/*.csv
 Usado em:
     Página e site.
 Escrito para este pacote a partir dos trechos rodados durante a análise.
@@ -53,9 +53,11 @@ cab = ('<!doctype html>\n<html lang="pt-BR">\n<head>\n<meta charset="utf-8">\n'
        'o que pode acontecer se não podar e quem precisa agir, a partir dos chamados abertos do 1746.">\n'
        '<style>body{margin:0}[hidden]{display:none!important}</style>\n')
 i = resto.index('<div class="wrap">')
-# No site, a página ganha a barra do topo (abas entre as páginas do projeto e quem fez), que fica em barra.js
+# No site, a página ganha a barra do topo (abas entre as páginas do projeto) e o rodapé com os
+# colaboradores; os dois ficam em barra.js
 barra = '<site-barra atual="poda"></site-barra>\n<script src="barra.js"></script>\n'
-site = cab + resto[:i] + '</head>\n<body>\n' + barra + resto[i:] + '\n</body>\n</html>\n'
+rodape = '\n<site-rodape></site-rodape>'
+site = cab + resto[:i] + '</head>\n<body>\n' + barra + resto[i:] + rodape + '\n</body>\n</html>\n'
 os.makedirs(os.path.join(SAIDAS, 'site', 'dados'), exist_ok=True)
 shutil.copy(os.path.join(RAIZ, 'pagina', 'barra_do_site.js'), os.path.join(SAIDAS, 'site', 'barra.js'))
 open(os.path.join(SAIDAS, 'site', 'index.html'), 'w', encoding='utf-8').write(site)
