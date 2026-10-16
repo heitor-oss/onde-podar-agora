@@ -213,7 +213,7 @@ df.head()
 
 **De onde veio o clima?** Da API histórica do Open-Meteo, consultada para vários pontos da cidade e resumida por dia (média e máximo entre os pontos). A lista exata de pontos não ficou registrada.
 
-**E as outras páginas do projeto?** As páginas "Picos de chamados por CEP", "Árvores e rede elétrica" e o "Painel do piloto" usam os resultados destas etapas, mas o código que as montou não foi guardado em arquivo. Só o site "Onde podar agora" é montado aqui (J19).
+**E as outras páginas do projeto?** As páginas "Picos de chamados por CEP", "Árvores e rede elétrica" e o "Painel do piloto" usam os resultados destas etapas, mas o código que as montou não foi guardado em arquivo. Só o site "Onde podar agora" é montado aqui (J19); a página de picos está no site já pronta (`picos-de-chamados.html`).
 
 ---
 

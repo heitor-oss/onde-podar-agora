@@ -12,6 +12,7 @@ Análise exploratória do projeto de extensão *Ciência de Dados para Cidades I
 |---|---|
 | **[Site: Onde podar agora](https://heitor-oss.github.io/onde-podar-agora/)** | Os lugares prioritários, o motivo de cada um, o risco de não podar, mapa de risco e a lista completa de 9.848 CEPs, vistos um a um ou agrupados em áreas de 150 m. Feito para gestores. |
 | **[Site: Painel 1746](https://heitor-oss.github.io/onde-podar-agora/painel-1746.html)** | Os chamados de poda do 1746 por bairro e por mês (2021 a 2025), ao lado da chuva dos pluviômetros do Alerta Rio. Filtros por período, tipo de chamado, zona, região, chuva e medida (total, por km² ou por habitante); mapa por bairro, rankings de bairros e ruas, quanto dos chamados vira poda e quanto tempo leva. |
+| **[Outras análises](#outras-análises)** | Picos de chamados por CEP: quando e onde as árvores da cidade viram emergência. Também no site, como terceira aba. |
 | **[Código da análise](codigo/)** | As 71 etapas em Python que vão dos CSVs do 1746 até o site: limpeza, modelos, validação. Comece pelo **[guia do código](codigo/README.md)**. |
 | **[Documento: aprendizado de máquina no projeto](docs/aprendizado_de_maquina.md)** | Explicação didática dos três modelos usados, de como foram testados e do quanto dá para confiar neles. |
 | **[Dados](dados/)** | O ranking completo por CEP, o ranking por área de 150 m e as quedas de árvore no verão por quadrado de 1 km, em CSV. |
@@ -41,7 +42,7 @@ Em 12 a 25 minutos, o site e as planilhas aparecem em `codigo/saidas/`. O **[gui
 
 ## O que o site mostra
 
-O site tem duas páginas, com abas no topo para trocar entre elas: **Onde podar agora** (abaixo) e o **Painel 1746**.
+O site tem três páginas, com abas no topo para trocar entre elas: **Onde podar agora** (abaixo), o **Painel 1746** e **Picos de chamados** (veja [Outras análises](#outras-análises)).
 
 ### Onde podar agora
 
@@ -117,12 +118,27 @@ No mapa de risco, usando o histórico até nov/2025, os 10% de quadrados com mai
 
 Testado e descartado (não melhorou o acerto): vizinhança de 150–300 m, quedas em verões anteriores no quadrado de 1 km, cobertura de árvores do setor, contagem por endereço, pedidos fechados como "não há previsão", os 3.901 pedidos fechados em massa em out/2025 e um modelo de aprendizado de máquina no lugar da soma com pesos.
 
+## Outras análises
+
+### [Picos de chamados por CEP](https://heitor-oss.github.io/onde-podar-agora/picos-de-chamados.html)
+
+Oito perguntas sobre quando e onde as árvores da cidade viram emergência, respondidas com os 169.816 chamados de manejo arbóreo do 1746 (set/2022 a set/2026) e dados de chuva e vento. Cada seção da página começa pela resposta e traz gráficos com uma linha dizendo como lê-los. Algumas respostas:
+
+- **Um pedido de poda é um alerta de curto prazo.** Quando um pedido vira queda, vira rápido: das árvores que caíram a até 30 m de um pedido feito no mês anterior, metade caiu em até 7 dias. Nos 3 primeiros dias depois do pedido, o risco de queda no local é 6 vezes o normal; depois de 2 a 3 meses, volta ao normal.
+- **O dia do pico é difícil de prever pelos chamados.** Em 55% dos picos emergenciais, o CEP não teve nenhum chamado nas 4 semanas anteriores. O que mais ajuda a prever o dia é o tempo: chuva e vento.
+- **Num temporal, o histórico mostra onde as árvores caem.** Os 10% de quadrados de 1 km com mais chamados no histórico recebem 35% das quedas; olhando também as primeiras quedas do próprio evento, 45%.
+- **Prontidão ajustada ao clima pega o dobro.** Juntando o mapa de risco com o clima do dia, a lista de prontidão pega 39% das quedas de 2025–2026, contra 20% de um mapa fixo com o mesmo esforço.
+- **Há um viés de quem liga.** Setores com a mesma cobertura de árvores e a mesma população chegam a fazer 18 vezes menos pedidos. Onde se liga menos, a árvore chega ao 1746 mais vezes já caída do que como pedido de poda.
+
+O código dessas análises está nos grupos B a G de [`codigo/`](codigo/); veja o [guia do código](codigo/README.md).
+
 ## Arquivos
 
 | Arquivo | Conteúdo |
 |---|---|
 | `index.html` | página Onde podar agora, autocontida (dados embutidos) |
 | `painel-1746.html` | página Painel 1746, autocontida (dados embutidos) |
+| `picos-de-chamados.html` | página Picos de chamados por CEP, autocontida (dados embutidos) |
 | `barra.js` | a barra do topo do site: abas entre as páginas e colaboradores |
 | `dados/ranking_ceps_poda.csv` | ranking completo com os pesos sugeridos: nota, posição na zona, pontos de cada sinal, contagens, coordenadas e área de 150 m do CEP |
 | `dados/ranking_areas_150m.csv` | ranking das áreas de 150 m: prioridade (soma das notas), maior nota, ação sugerida, contagens somadas, CEPs da área e centro |
@@ -142,4 +158,5 @@ Testado e descartado (não melhorou o acerto): vizinhança de 150–300 m, queda
 ## Fonte
 
 - **Onde podar agora:** chamados de manejo arbóreo da Central 1746, set/2022 a set/2026, publicados no Data.Rio (base de dados abertos da Prefeitura do Rio). Dados até 20/09/2026. Pedidos agregados por CEP; nenhum dado pessoal é exibido.
+- **Picos de chamados:** os 169.816 chamados de manejo arbóreo do 1746 (set/2022 a set/2026, Data.Rio); chuva e vento do Open-Meteo; pluviômetros do Alerta Rio e WebSirene (Data.Rio, até dez/2024); cobertura de árvores por setor censitário (ESA WorldCover e Censo 2022).
 - **Painel 1746:** chamados de poda do 1746 (Data.Rio) de jan/2021 a dez/2025, sem duplicados, agregados por bairro e mês; chuva dos pluviômetros do Alerta Rio.

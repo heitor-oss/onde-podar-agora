@@ -1,13 +1,15 @@
 // Barra do topo do site (GitHub Pages): abas para trocar de página e os colaboradores do projeto.
 // Cada página do site põe <site-barra atual="id-da-pagina"></site-barra> logo depois de <body>
-// e carrega este arquivo (barra.js). Para incluir uma página nova, acrescente-a em PAGINAS.
+// e carrega este arquivo (barra.js). Para incluir uma página nova, acrescente-a em PAGINAS
+// (curto é o nome usado em telas estreitas, como a do celular).
 // Os atributos opcionais largura e margem alinham a barra com o conteúdo da página
 // (ex.: <site-barra atual="painel" largura="1240" margem="16">).
 // A barra é desenhada dentro de um "shadow DOM", para que o estilo dela e o das páginas não se misturem.
 (function () {
   const PAGINAS = [
-    { id: 'poda', href: './', titulo: 'Onde podar agora' },
-    { id: 'painel', href: 'painel-1746.html', titulo: 'Painel 1746' }
+    { id: 'poda', href: './', titulo: 'Onde podar agora', curto: 'Onde podar' },
+    { id: 'painel', href: 'painel-1746.html', titulo: 'Painel 1746', curto: 'Painel 1746' },
+    { id: 'picos', href: 'picos-de-chamados.html', titulo: 'Picos de chamados', curto: 'Picos' }
   ];
   const EQUIPE = [
     { nome: 'Heitor Morais', github: 'heitor-oss' },
@@ -29,7 +31,9 @@
     .eq a{color:var(--t);text-decoration:underline;text-decoration-color:var(--l);text-underline-offset:3px}
     .eq a:hover{text-decoration-color:var(--a)}
     a:focus-visible{outline:2px solid var(--a);outline-offset:2px;border-radius:3px}
+    .sh{display:none}
     @media (max-width:640px){.eq{padding:0 0 10px}}
+    @media (max-width:480px){.lg{display:none}.sh{display:inline}}
   `;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   class SiteBarra extends HTMLElement {
@@ -37,12 +41,16 @@
       if (this.shadowRoot) return;
       const atual = this.getAttribute('atual');
       const px = (nome, padrao) => (+this.getAttribute(nome) || padrao) + 'px';
-      const abas = PAGINAS.map(p => `<a href="${esc(p.href)}"${p.id === atual ? ' aria-current="page"' : ''}>${esc(p.titulo)}</a>`).join('');
+      const abas = PAGINAS.map(p => `<a href="${esc(p.href)}"${p.id === atual ? ' aria-current="page"' : ''}>` +
+        `<span class="lg">${esc(p.titulo)}</span><span class="sh">${esc(p.curto || p.titulo)}</span></a>`).join('');
       const nomes = EQUIPE.map(e => `<a href="https://github.com/${esc(e.github)}" target="_blank" rel="noopener">${esc(e.nome)}</a>`);
       const equipe = nomes.slice(0, -1).join(', ') + (nomes.length > 1 ? ' e ' : '') + nomes[nomes.length - 1];
       this.attachShadow({ mode: 'open' }).innerHTML =
         `<style>:host{--w:${px('largura', 1080)};--p:${px('margem', 20)}}${CSS}</style><nav aria-label="Páginas do projeto"><div class="in"><div class="tabs">${abas}</div>` +
         `<div class="eq"><span>Colaboradores: ${equipe}</span></div></div></nav>`;
+      // se as abas não couberem na largura, mostra a aba atual
+      const tabs = this.shadowRoot.querySelector('.tabs'), cur = this.shadowRoot.querySelector('[aria-current]');
+      if (cur && tabs.scrollWidth > tabs.clientWidth) tabs.scrollLeft = cur.offsetLeft - tabs.offsetLeft - 8;
     }
   }
   if (!customElements.get('site-barra')) customElements.define('site-barra', SiteBarra);
