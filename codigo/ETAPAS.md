@@ -670,5 +670,5 @@ Junta CEPs vizinhos em áreas de até 150 m de raio, com o mesmo algoritmo gulos
 Insere o ranking (com as áreas), o mapa e a comparação por área × por CEP no modelo HTML e gera a versão do artefato e o index.html do GitHub Pages, com as planilhas em site/dados.
 
 - **Lê:** rank_data.json, cell_quedas.json, area_bt.json, pagina/onde_podar_agora_modelo.html
-- **Grava:** onde_podar_agora_artefato.html, site/index.html, site/dados/*.csv (saidas)
+- **Grava:** onde_podar_agora_artefato.html, site/index.html, site/barra.js (barra do topo, copiada de pagina/barra_do_site.js), site/dados/*.csv (saidas)
 - **Usado em:** Página e site.

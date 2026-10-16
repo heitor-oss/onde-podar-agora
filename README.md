@@ -4,11 +4,14 @@ Onde a poda de árvores é mais urgente no Rio, por que, e o que pode acontecer 
 
 Análise exploratória do projeto de extensão *Ciência de Dados para Cidades Inteligentes* (UFRJ). Não é um dado oficial da Prefeitura, da COMLURB nem da Light.
 
+**Equipe:** Heitor Morais ([@heitor-oss](https://github.com/heitor-oss)) e José Salgado ([@jssppedra-png](https://github.com/jssppedra-png)).
+
 ## O que tem neste repositório
 
 | | |
 |---|---|
 | **[Site: Onde podar agora](https://heitor-oss.github.io/onde-podar-agora/)** | Os lugares prioritários, o motivo de cada um, o risco de não podar, mapa de risco e a lista completa de 9.848 CEPs, vistos um a um ou agrupados em áreas de 150 m. Feito para gestores. |
+| **[Site: Painel 1746](https://heitor-oss.github.io/onde-podar-agora/painel-1746.html)** | Os chamados de poda do 1746 por bairro e por mês (2021 a 2025), ao lado da chuva dos pluviômetros do Alerta Rio. Filtros por período, tipo de chamado, zona, região, chuva e medida (total, por km² ou por habitante); mapa por bairro, rankings de bairros e ruas, quanto dos chamados vira poda e quanto tempo leva. |
 | **[Código da análise](codigo/)** | As 71 etapas em Python que vão dos CSVs do 1746 até o site: limpeza, modelos, validação. Comece pelo **[guia do código](codigo/README.md)**. |
 | **[Documento: aprendizado de máquina no projeto](docs/aprendizado_de_maquina.md)** | Explicação didática dos três modelos usados, de como foram testados e do quanto dá para confiar neles. |
 | **[Dados](dados/)** | O ranking completo por CEP, o ranking por área de 150 m e as quedas de árvore no verão por quadrado de 1 km, em CSV. |
@@ -36,7 +39,11 @@ python rodar_tudo.py
 
 Em 12 a 25 minutos, o site e as planilhas aparecem em `codigo/saidas/`. O **[guia do código](codigo/README.md)** explica passo a passo como rodar, como os dados foram limpos e filtrados, onde está cada modelo e o que tem em cada arquivo. A lista de todas as etapas está em **[codigo/ETAPAS.md](codigo/ETAPAS.md)**.
 
-## O que a página mostra
+## O que o site mostra
+
+O site tem duas páginas, com abas no topo para trocar entre elas: **Onde podar agora** (abaixo) e o **Painel 1746**.
+
+### Onde podar agora
 
 - **Duas formas de ver os lugares:** **por CEP** (cada lugar é um CEP) ou **por área de 150 m** (CEPs vizinhos viram um só destino, com prioridade igual à soma das notas). A escolha vale para os 10 mais urgentes e para a lista completa.
 - **Os 10 lugares (ou áreas) mais urgentes** (na cidade ou em cada zona), cada um com: por que está na lista, o que pode acontecer se não for podado e quem precisa agir (COMLURB, Light ou vistoria).
@@ -114,7 +121,9 @@ Testado e descartado (não melhorou o acerto): vizinhança de 150–300 m, queda
 
 | Arquivo | Conteúdo |
 |---|---|
-| `index.html` | o site, autocontido (dados embutidos) |
+| `index.html` | página Onde podar agora, autocontida (dados embutidos) |
+| `painel-1746.html` | página Painel 1746, autocontida (dados embutidos) |
+| `barra.js` | a barra do topo do site: abas entre as páginas e equipe |
 | `dados/ranking_ceps_poda.csv` | ranking completo com os pesos sugeridos: nota, posição na zona, pontos de cada sinal, contagens, coordenadas e área de 150 m do CEP |
 | `dados/ranking_areas_150m.csv` | ranking das áreas de 150 m: prioridade (soma das notas), maior nota, ação sugerida, contagens somadas, CEPs da área e centro |
 | `dados/quedas_verao_quadrados_1km.csv` | quedas de árvore de dezembro a abril (2022–2026) por quadrado de ~1 km |
@@ -132,4 +141,5 @@ Testado e descartado (não melhorou o acerto): vizinhança de 150–300 m, queda
 
 ## Fonte
 
-Chamados de manejo arbóreo da Central 1746, set/2022 a set/2026, publicados no Data.Rio (base de dados abertos da Prefeitura do Rio). Dados até 20/09/2026. Pedidos agregados por CEP; nenhum dado pessoal é exibido.
+- **Onde podar agora:** chamados de manejo arbóreo da Central 1746, set/2022 a set/2026, publicados no Data.Rio (base de dados abertos da Prefeitura do Rio). Dados até 20/09/2026. Pedidos agregados por CEP; nenhum dado pessoal é exibido.
+- **Painel 1746:** chamados de poda do 1746 (Data.Rio) de jan/2021 a dez/2025, sem duplicados, agregados por bairro e mês; chuva dos pluviômetros do Alerta Rio.
