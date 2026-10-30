@@ -12,7 +12,7 @@ Análise exploratória do projeto de extensão *Ciência de Dados para Cidades I
 |---|---|
 | **[Site: Onde podar agora](https://heitor-oss.github.io/onde-podar-agora/)** | Os lugares prioritários, o motivo de cada um, o risco de não podar, mapa de risco e a lista completa de 9.848 CEPs, vistos um a um ou agrupados em áreas de 150 m. Feito para gestores. |
 | **[Site: Painel 1746](https://heitor-oss.github.io/onde-podar-agora/painel-1746.html)** | Os chamados de poda do 1746 por bairro e por mês (2021 a 2025), ao lado da chuva dos pluviômetros do Alerta Rio. Filtros por período, tipo de chamado, zona, região, chuva e medida (total, por km² ou por habitante); mapa por bairro, rankings de bairros e ruas, quanto dos chamados vira poda e quanto tempo leva. |
-| **[Vídeo de apresentação](https://heitor-oss.github.io/onde-podar-agora/video.html)** | Em menos de 3 minutos, o que o site mostra e como usar, com narração e legendas. Feito para enviar a gestores. |
+| **[Vídeo de apresentação](https://heitor-oss.github.io/onde-podar-agora/video.html)** | Em menos de 3 minutos, o que o site mostra e como usar, com narração e legendas. |
 | **[Outras análises](#outras-análises)** | Picos de chamados por CEP: quando e onde as árvores da cidade viram emergência. Também no site, como terceira aba. |
 | **[Código da análise](codigo/)** | As 71 etapas em Python que vão dos CSVs do 1746 até o site: limpeza, modelos, validação. Comece pelo **[guia do código](codigo/README.md)**. |
 | **[Documento: aprendizado de máquina no projeto](docs/aprendizado_de_maquina.md)** | Explicação didática dos três modelos usados, de como foram testados e do quanto dá para confiar neles. |
