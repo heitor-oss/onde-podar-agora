@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vídeo de apresentação · Onde podar agora</title>
+<meta name="description" content="Em menos de 3 minutos, o que o site Onde podar agora mostra e como usar: onde a poda de árvores é mais urgente no Rio, por quê e o que pode acontecer se não podar.">
+<meta property="og:type" content="video.other">
+<meta property="og:title" content="Onde podar agora: vídeo de apresentação">
+<meta property="og:description" content="Onde a poda de árvores é mais urgente no Rio de Janeiro, por quê e o que pode acontecer se não podar. Projeto de extensão Ciência de Dados para Cidades Inteligentes (UFRJ).">
+<meta property="og:url" content="https://heitor-oss.github.io/onde-podar-agora/video.html">
+<meta property="og:image" content="https://heitor-oss.github.io/onde-podar-agora/video/capa.jpg">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
+<meta property="og:video" content="https://heitor-oss.github.io/onde-podar-agora/video/onde-podar-agora-apresentacao.mp4">
+<meta property="og:video:type" content="video/mp4">
+<meta property="og:video:width" content="1920">
+<meta property="og:video:height" content="1080">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+  :root{--bg:#121a16;--ink:#eef3f0;--muted:#a9bcb1;--accent:#7fd8a9;--line:rgba(255,255,255,.12);color-scheme:dark}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3","Segoe UI",system-ui,sans-serif;font-size:17px;line-height:1.5}
+  .wrap{max-width:1120px;margin:0 auto;padding:36px 20px 64px;display:flex;flex-direction:column;gap:22px}
+  .k{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+  h1{font-family:Archivo,"Source Sans 3",sans-serif;font-weight:800;font-size:clamp(30px,5vw,48px);line-height:1.05;letter-spacing:-.02em;margin:6px 0 0;text-wrap:balance}
+  p{margin:0;max-width:70ch;color:#d6e2db}
+  .player{position:relative;border-radius:14px;overflow:hidden;background:#000;box-shadow:0 18px 50px rgba(0,0,0,.45),0 0 0 1px var(--line)}
+  video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#000}
+  .acoes{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;font-weight:600;font-size:16px;text-decoration:none;border:1px solid var(--line);color:var(--ink)}
+  .btn.prim{background:#2f9e6b;border-color:#2f9e6b;color:#fff}
+  .btn:hover{border-color:var(--accent)}
+  .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .nota{font-size:15px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+  .nota a{color:var(--accent)}
+  @media (max-width:560px){.wrap{padding:24px 16px 48px}.btn{flex:1 1 auto;justify-content:center}}
+</style>
+</head>
+<body>
+<site-barra atual="video" largura="1120" margem="20"></site-barra>
+<script src="barra.js"></script>
+<main class="wrap">
+  <div>
+    <div class="k">Projeto de extensão · Ciência de Dados para Cidades Inteligentes · UFRJ</div>
+    <h1>Onde podar agora: vídeo de apresentação</h1>
+  </div>
+  <p>Em menos de 3 minutos, o que o site mostra e como usar: onde a poda de árvores é mais urgente no Rio de Janeiro, por quê e o que pode acontecer se não podar. Tem legendas, então dá para assistir sem som.</p>
+  <div class="player">
+    <video controls playsinline preload="metadata" poster="video/capa.jpg">
+      <source src="video/onde-podar-agora-apresentacao.mp4" type="video/mp4">
+      Seu navegador não toca vídeos aqui. <a href="video/onde-podar-agora-apresentacao.mp4">Baixe o vídeo</a>.
+    </video>
+  </div>
+  <div class="acoes">
+    <a class="btn prim" href="./">Abrir o site</a>
+    <a class="btn" href="video/onde-podar-agora-apresentacao.mp4" download>Baixar o vídeo (MP4, 23 MB)</a>
+  </div>
+  <p class="nota">Projeto em fase inicial e aberto a sugestões. Código, dados e contato: <a href="https://github.com/heitor-oss/onde-podar-agora" target="_blank" rel="noopener">github.com/heitor-oss/onde-podar-agora</a>. Análise exploratória com dados abertos do 1746; não é um dado oficial da Prefeitura, da COMLURB nem da Light.</p>
+</main>
+</body>
+</html>
